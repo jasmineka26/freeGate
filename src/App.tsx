@@ -5,7 +5,9 @@ import "./index.css";
 function App() {
   return (
     <>
-      <Login></Login>
+      <div dir="rtl">
+        <Login />
+      </div>
     </>
   );
 }
