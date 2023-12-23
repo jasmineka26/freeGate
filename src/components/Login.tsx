@@ -16,10 +16,16 @@ const Login = () => {
       .post("/Login", { username, password })
       .then((res) => {
         toast.success("خوش آمدید", { icon: "🌵" });
+        setUsername("");
+        setPassword("");
       })
       .catch((err) => {
         console.log(err.response);
         toast.error(err.response.data.message);
+      })
+      .finally(() => {
+        setPassword("");
+        setUsername("");
       });
   };
 

@@ -12,7 +12,7 @@ const Input = ({ type, placeholder, value, onChange }: Props) => {
       value={value}
       type={type}
       placeholder={placeholder}
-      className={`font-sans bg-opacity-15 bg-white backdrop-blur-md shadow-md rounded-full w-[80%] h-12 px-4 text-[#46f1fd] focus:ring
+      className={`font-sans bg-opacity-15 bg-white backdrop-blur-md shadow-md rounded-full w-[80%] h-12 px-4 text-white focus:ring
        placeholder-[#ece5ff] `}
     />
   );
