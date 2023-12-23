@@ -1,11 +1,15 @@
 interface Props {
   type: string;
   placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Input = ({ type, placeholder }: Props) => {
+const Input = ({ type, placeholder, value, onChange }: Props) => {
   return (
     <input
+      onChange={onChange}
+      value={value}
       type={type}
       placeholder={placeholder}
       className={`font-sans bg-opacity-15 bg-white backdrop-blur-md shadow-md rounded-full w-[80%] h-12 px-4 text-[#46f1fd] focus:ring
