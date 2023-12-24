@@ -10,6 +10,7 @@ import {
 } from "@heroicons/react/24/solid";
 import AsideButton from "./aside/AsideButton";
 import Header from "./aside/Header";
+import { useState } from "react";
 
 const Aside = () => {
   const menuItem = [
@@ -23,6 +24,12 @@ const Aside = () => {
     { icon: ClipboardDocumentCheckIcon, name: "بسته ها" },
   ];
 
+  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+
+  const handleButtonClick = (itemName: string) => {
+    setSelectedButton(itemName === selectedButton ? null : itemName);
+  };
+
   return (
     <aside
       className={`bg-gradient-to-br from-gray-800 to-gray-900 -translate-x-80  inset-0 z-50 my-4 mr-4 h-[calc(100vh-32px)]
@@ -32,7 +39,12 @@ const Aside = () => {
         <Header />
       </div>
       {menuItem.map((item) => (
-        <AsideButton key={item.name} icon={item.icon}>
+        <AsideButton
+          key={item.name}
+          icon={item.icon}
+          color={selectedButton === item.name ? "blue" : "#1e293b"}
+          onClick={() => handleButtonClick(item.name)}
+        >
           {item.name}
         </AsideButton>
       ))}
