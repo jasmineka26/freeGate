@@ -1,6 +1,6 @@
 import Aside from "./dashboard/Aside";
 
-const Users = () => {
+const Dashboard = () => {
   return (
     <>
       <div className="flex justify-start items-start min-h-screen bg-gray-50/50 w-screen h-screen ">
@@ -546,4 +546,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Dashboard;

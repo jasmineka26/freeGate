@@ -1,30 +1,29 @@
 import { Image } from "@chakra-ui/react";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import loadingGif from "../assets/cactus-pavilion.gif";
 import client from "../services/client";
 import Button from "./login/Button";
 import Input from "./login/Input";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const printUserInfo = () => {
     client
       .login(username, password)
-      .then((res) => {
+      .then(() => {
         toast.success("خوش آمدید", { icon: "🌵" });
-        console.log(res);
-        setUsername("");
-        setPassword("");
+        navigate("/users", { replace: true });
       })
       .catch((err) => {
         console.log(err.response);
         toast.error(err.response.data.message);
-      })
-      .finally(() => {
         setPassword("");
         setUsername("");
       });
@@ -32,19 +31,11 @@ const Login = () => {
 
   return (
     <>
-      <ToastContainer
-        position="top-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={true}
-      />
-
       <div
         className={`flex items-center flex-col justify-center h-[590px] w-[460px]
-         bg-opacity-15 bg-white backdrop-blur-md shadow-lg rounded-lg text-white
+         bg-opacity-15 bg-white backdrop-blur-md shadow-lg rounded-xl text-white
          uppercase tracking-wider gap-8
+         login
      `}
       >
         <div className="flex flex-col justify-center items-center gap-3">
