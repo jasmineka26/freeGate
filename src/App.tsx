@@ -8,7 +8,7 @@ import Users from "./components/Users";
 function App() {
   return (
     <>
-      <div dir="rtl">
+      <div dir="rtl" className="font-sans">
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Login />} />

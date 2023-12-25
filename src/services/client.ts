@@ -2,11 +2,15 @@ import _axios from "axios";
 
 // let token = "";
 
-let axios = createAxiosInstance(undefined);
+const AUTH_KEY = "auth";
+
+let axios = createAxiosInstance(localStorage.getItem(AUTH_KEY) ?? undefined);
 
 const login = async (username: string, password: string) => {
   const res = await axios.post("/Login", { username, password });
-  axios = createAxiosInstance(res.data);
+  const token = res.data;
+  localStorage.setItem(AUTH_KEY, token);
+  axios = createAxiosInstance(token);
   return res.data;
 };
 

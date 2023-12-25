@@ -9,6 +9,15 @@ const Users: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const handleSearch = (searchUsername: string) => {
+    setUsers((users) =>
+      users.filter((user) => {
+        user.username === searchUsername ??
+          console.log(user.username, searchUsername);
+      })
+    );
+  };
+
   useEffect(() => {
     client
       .getUsers()
@@ -35,7 +44,7 @@ const Users: React.FC = () => {
   return (
     <>
       <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
-        <Search />
+        <Search handleClick={handleSearch} />
         <UserTable users={users} />
       </div>
     </>
