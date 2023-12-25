@@ -3,7 +3,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const Search = () => {
   return (
-    <div className="flex flex-row p-5 rounded-xl items-center justify-between bg-slate-200">
+    <div className="flex flex-row p-4 rounded-xl items-center justify-between bg-white shadow-lg">
       <div>
         <AddButton />
       </div>

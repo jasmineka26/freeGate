@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
-import Login from "./components/Login";
-import UserTable from "./components/UsersTable";
 import Dashboard from "./components/Dashboard";
+import Login from "./components/Login";
+import Users from "./components/Users";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
               element={
                 <div className="flex flex-row w-screen gap-5">
                   <Dashboard />
-                  <UserTable />
+                  <Users />
                 </div>
               }
             />
