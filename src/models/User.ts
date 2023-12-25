@@ -4,13 +4,13 @@ export default interface User {
   username: string;
   password: string;
   subscription: Subscription | null;
-  reserved_subscription: any[];
+  reserved_subscription: [];
   payment_card: PaymentCard | null;
   server_name: string;
-	server_id: number;
+  server_id: number;
   os: string;
   role_id: number;
-  xrayAccounts: any[];
+  xrayAccounts: XrayAccounts[];
   referer_id: number | null;
 }
 
@@ -23,7 +23,13 @@ interface PaymentCard {
 }
 
 interface Subscription {
-  "is_active": boolean,
-  "remainGB": number,
-  "remainDays": number
-},
+  is_active: boolean;
+  remainGB: number;
+  remainDays: number;
+}
+
+interface XrayAccounts {
+  id: 3;
+  xray_username: "jasmine_iphone_PfqdT";
+  inbound_id: 2;
+}

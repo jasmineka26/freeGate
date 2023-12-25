@@ -1,5 +1,4 @@
 import AddButton from "./AddButton";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const Search = () => {
   return (
