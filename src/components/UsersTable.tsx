@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Search from "./users/Search";
-import AddButton from "./users/AddButton";
-import client from "../services/client";
 import User from "../models/User";
-import { toast } from "react-toastify";
-import { AxiosError } from "axios";
+import client from "../services/client";
+import Search from "./users/Search";
 
 const UserTable: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -36,13 +33,12 @@ const UserTable: React.FC = () => {
   }
 
   return (
-    <div className="flex w-screen h-screen justify-center items-center bg-slate-400">
-      <div className="flx flex-col w-[80%] h-[90%] ">
-        <div className="flex items-center  justify-between">
-          <AddButton />
+    <div className="flex flex-col w-full bg-slate-400">
+      <div>
+        <div className="p-5">
           <Search />
         </div>
-        <div className="pt-3">
+        <div className="flex bg-slate-200 rounded-xl ">
           <div>
             <h2 className="text-2xl font-bold mb-4">User List</h2>
           </div>

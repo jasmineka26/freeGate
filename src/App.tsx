@@ -3,6 +3,7 @@ import { ToastContainer } from "react-toastify";
 import "./App.css";
 import Login from "./components/Login";
 import UserTable from "./components/UsersTable";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
@@ -11,11 +12,16 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/users" element={<UserTable />} />
+            <Route
+              path="/users"
+              element={
+                <div className="flex flex-row w-screen gap-5">
+                  <Dashboard />
+                  <UserTable />
+                </div>
+              }
+            />
           </Routes>
-
-          {/* <Dashboard /> */}
-          {/* <UserTable /> */}
         </BrowserRouter>
       </div>
       <ToastContainer
