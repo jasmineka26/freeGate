@@ -8,15 +8,8 @@ const Users: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  const handleSearch = (searchUsername: string) => {
-    setUsers((users) =>
-      users.filter((user) => {
-        user.username === searchUsername ??
-          console.log(user.username, searchUsername);
-      })
-    );
-  };
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
   useEffect(() => {
     client
@@ -34,6 +27,17 @@ const Users: React.FC = () => {
       });
   }, []);
 
+  useEffect(() => {
+    const filtered = users.filter((user) => {
+      return user.username.includes(searchTerm);
+    });
+    setFilteredUsers(filtered);
+  }, [users, searchTerm]);
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -44,8 +48,8 @@ const Users: React.FC = () => {
   return (
     <>
       <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
-        <Search handleClick={handleSearch} />
-        <UserTable users={users} />
+        <Search onSearchChange={handleSearchChange} />
+        <UserTable users={filteredUsers} />
       </div>
     </>
   );

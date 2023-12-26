@@ -3,10 +3,10 @@ import { useState } from "react";
 import AddButton from "./AddButton";
 
 interface Props {
-  handleClick: any;
+  onSearchChange: (searchWord: string) => void;
 }
 
-const Search = ({ handleClick }: Props) => {
+const Search = ({ onSearchChange }: Props) => {
   const [searchWord, setSearchWord] = useState("");
 
   return (
@@ -19,13 +19,12 @@ const Search = ({ handleClick }: Props) => {
             name="search"
             placeholder="Search"
             value={searchWord}
-            onChange={(e) => setSearchWord(e.target.value)}
+            onChange={(e) => {
+              setSearchWord(e.target.value);
+              onSearchChange(e.target.value); // Call the callback
+            }}
           />
-          <button
-            type="submit"
-            className="absolute left-0 mt-4 ml-4"
-            onClick={() => handleClick(searchWord)}
-          >
+          <button type="submit" className="absolute left-0 mt-4 ml-4">
             <MagnifyingGlassIcon className="w-4 h-4" />
           </button>
         </div>
