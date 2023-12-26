@@ -29,7 +29,7 @@ const Search = ({ onSearchChange }: Props) => {
       </div>
 
       <div>
-        <AddButton />
+        <AddButton buttonName="+Add User" />
       </div>
     </div>
   );

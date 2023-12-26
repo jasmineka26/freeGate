@@ -5,6 +5,7 @@ import AsideMenue from "./components/AsideMenue";
 import Login from "./components/Login";
 import Users from "./components/Users";
 import Dashboard from "./components/Dashboard";
+import Cards from "./components/Cards";
 
 function App() {
   return (
@@ -28,6 +29,15 @@ function App() {
                 <div className="flex flex-row w-screen gap-5">
                   <AsideMenue />
                   <Dashboard />
+                </div>
+              }
+            />
+            <Route
+              path="/cards"
+              element={
+                <div className="flex flex-row w-screen gap-5">
+                  <AsideMenue />
+                  <Cards />
                 </div>
               }
             />
