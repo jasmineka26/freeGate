@@ -20,7 +20,7 @@ const Login = () => {
       .login(username, password)
       .then(() => {
         toast.success("خوش آمدید", { icon: "🌵" });
-        navigate("/users", { replace: true });
+        navigate("/dashboard", { replace: true });
       })
       .catch((err) => {
         console.log(err.response);

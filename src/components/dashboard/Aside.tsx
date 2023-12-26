@@ -10,7 +10,8 @@ import {
 } from "@heroicons/react/24/solid";
 import AsideButton from "./aside/AsideButton";
 import Header from "./aside/Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Aside = () => {
   const menuItem = [
@@ -24,11 +25,29 @@ const Aside = () => {
     { icon: ClipboardDocumentCheckIcon, name: "بسته ها" },
   ];
 
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const [selectedButton, setSelectedButton] = useState<string | null>(
+    "داشبــورد"
+  );
+  const navigate = useNavigate();
+  // useEffect(() => {
+  //   navigate("/dashboard", {
+  //     replace: true,
+  //   });
+  // });
 
   const handleButtonClick = (itemName: string) => {
-    setSelectedButton(itemName === selectedButton ? null : itemName);
+    setSelectedButton(itemName);
+    navigate(itemName === "کاربــران" ? "/users" : "/dashboard", {
+      replace: true,
+    });
   };
+
+  // const handleButtonClick = (itemName: string) => {
+  //   setSelectedButton(itemName === selectedButton ? null : itemName);
+  //   itemName === "کاربــران"
+  //     ? navigate("/users", { replace: true })
+  //     : navigate("/dashboard", { replace: true });
+  // };
 
   return (
     <aside
