@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
-import Card from "../models/Card";
-import AddButton from "./users/AddButton";
 import client from "../services/client";
+import Config from "../models/Config";
+import AddButton from "./users/AddButton";
 
-const Cards = () => {
-  const [cards, setCards] = useState<Card[]>([]);
+const Configs = () => {
+  const [configs, setConfigs] = useState<Config[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     client
-      .getCards()
+      .getConfigs()
       .then((res) => {
-        setCards(res);
+        setConfigs(res);
         setLoading(false);
         setError(null);
       })
       .catch((error) => {
-        setError("Error fetching cards data");
+        setError("Error fetching configs data");
         console.error("Error fetching cards data:", error);
-        setError("Error fetching cards data");
+        setError("Error fetching configs data");
       });
   }, []);
 
@@ -27,7 +27,7 @@ const Cards = () => {
     <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
       <div className="flex flex-row p-4 rounded-xl items-center justify-between bg-white shadow-lg">
         <div className="flex flex-row w-full text-gray-600 justify-end items-center">
-          <AddButton buttonName="+Add Card" />
+          <AddButton buttonName="+Add Config" />
         </div>
       </div>
       <div className="flex rounded-xl overflow-hidden shadow-xl">
@@ -42,20 +42,23 @@ const Cards = () => {
                   عنوان
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  شماره کارت
+                  عنوان نمایشی
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  نام صاحب کارت
+                  آدرس
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  مدیر کارت
+                  SNI
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  سایر تنظیمات
                 </th>
               </tr>
             </thead>
             <tbody className="text-center">
-              {cards.map((card, index) => (
+              {configs.map((config, index) => (
                 <tr
-                  key={card.id}
+                  key={config.id}
                   className={`${
                     index % 2 === 0 ? "bg-white" : "bg-gray-100"
                   } border-b`}
@@ -64,12 +67,13 @@ const Cards = () => {
                     scope="row"
                     className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {card.id}
+                    {index + 1}
                   </td>
-                  <td className="px-6 py-4">{card.title}</td>
-                  <td className="px-6 py-4">{card.card_number}</td>
-                  <td className="px-6 py-4">{card.card_owner_name}</td>
-                  <td className="px-6 py-4">{card.owner_id}</td>
+                  <td className="px-6 py-4">{config.title}</td>
+                  <td className="px-6 py-4">{config.user_title}</td>
+                  <td className="px-6 py-4">{config.address}</td>
+                  <td className="px-6 py-4">{config.sni}</td>
+                  <td className="px-6 py-4">{config.settings}</td>
                 </tr>
               ))}
             </tbody>
@@ -80,4 +84,4 @@ const Cards = () => {
   );
 };
 
-export default Cards;
+export default Configs;

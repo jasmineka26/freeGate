@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import Users from "./components/Users";
 import Dashboard from "./components/Dashboard";
 import Cards from "./components/Cards";
+import Config from "./components/Config";
 
 function App() {
   return (
@@ -38,6 +39,15 @@ function App() {
                 <div className="flex flex-row w-screen gap-5">
                   <AsideMenue />
                   <Cards />
+                </div>
+              }
+            />{" "}
+            <Route
+              path="/configs"
+              element={
+                <div className="flex flex-row w-screen gap-5">
+                  <AsideMenue />
+                  <Config />
                 </div>
               }
             />

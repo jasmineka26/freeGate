@@ -18,8 +18,14 @@ const getUsers = async () => {
   const res = await axios.get("/users");
   return res.data;
 };
+
 const getCards = async () => {
   const res = await axios.get("/cards");
+  return res.data;
+};
+
+const getConfigs = async () => {
+  const res = await axios.get("/configs");
   return res.data;
 };
 
@@ -27,6 +33,7 @@ const client = Object.freeze({
   login,
   getUsers,
   getCards,
+  getConfigs,
 });
 export default client;
 

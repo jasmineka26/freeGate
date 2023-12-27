@@ -19,7 +19,7 @@ const Aside = () => {
     { icon: UserIcon, name: "کاربــران", url: "/users" },
     { icon: BanknotesIcon, name: "پرداخت ها", url: "/payment" },
     { icon: ChartPieIcon, name: "گـزارشـات", url: "/report" },
-    { icon: AdjustmentsHorizontalIcon, name: "کـانفیــگ", url: "/config" },
+    { icon: AdjustmentsHorizontalIcon, name: "کـانفیــگ", url: "/configs" },
     { icon: FunnelIcon, name: "دسته بندی", url: "/sort" },
     { icon: CreditCardIcon, name: "کارت ها", url: "/cards" },
     { icon: ClipboardDocumentCheckIcon, name: "بسته ها", url: "/packs" },

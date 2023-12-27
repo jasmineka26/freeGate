@@ -16,7 +16,6 @@ const Users: React.FC = () => {
       .getUsers()
       .then((res) => {
         setUsers(res);
-        console.log(res);
         setLoading(false);
         setError(null);
       })
