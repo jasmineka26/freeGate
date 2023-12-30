@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import client from "../services/client";
 import Config from "../models/Config";
-import AddButton from "./users/AddButton";
+import AddButton from "./AddButton";
 
 const Configs = () => {
   const [configs, setConfigs] = useState<Config[]>([]);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Card from "../models/Card";
-import AddButton from "./users/AddButton";
+import AddButton from "./AddButton";
 import client from "../services/client";
 
 const Cards = () => {

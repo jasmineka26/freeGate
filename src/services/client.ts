@@ -1,4 +1,5 @@
 import _axios from "axios";
+import User from "../models/User";
 
 // let token = "";
 
@@ -14,7 +15,7 @@ const login = async (username: string, password: string) => {
   return res.data;
 };
 
-const getUsers = async () => {
+const getUsers = async (): Promise<User[]> => {
   const res = await axios.get("/users");
   return res.data;
 };

@@ -9,7 +9,7 @@ import {
   UserIcon,
 } from "@heroicons/react/24/solid";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AsideButton from "./aside/AsideButton";
 import Header from "./aside/Header";
 
@@ -25,14 +25,13 @@ const Aside = () => {
     { icon: ClipboardDocumentCheckIcon, name: "بسته ها", url: "/packs" },
   ];
 
-  const [selectedButton, setSelectedButton] = useState<string | null>(
-    "داشبــورد"
-  );
+  const { pathname } = useLocation();
+  const [selectedButton, setSelectedButton] = useState<string | null>(pathname);
   const navigate = useNavigate();
 
-  const handleButtonClick = (itemName: string) => {
-    setSelectedButton(itemName);
-    const selectedItem = menuItem.find((item) => item.name === itemName);
+  const handleButtonClick = (itemURL: string) => {
+    setSelectedButton(itemURL);
+    const selectedItem = menuItem.find((item) => item.url === itemURL);
     if (selectedItem) {
       navigate(selectedItem.url, { replace: true });
     }
@@ -50,8 +49,8 @@ const Aside = () => {
         <AsideButton
           key={item.name}
           icon={item.icon}
-          color={selectedButton === item.name ? "blue" : "#1e293b"}
-          onClick={() => handleButtonClick(item.name)}
+          color={selectedButton === item.url ? "blue" : "#1e293b"}
+          onClick={() => handleButtonClick(item.url)}
         >
           {item.name}
         </AsideButton>

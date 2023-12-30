@@ -2,11 +2,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import AsideMenue from "./components/AsideMenue";
-import Login from "./components/Login";
-import Users from "./components/Users";
-import Dashboard from "./components/Dashboard";
 import Cards from "./components/Cards";
 import Config from "./components/Config";
+import Dashboard from "./components/Dashboard";
+import Login from "./components/LoginPage";
+import UsersPage from "./components/UsersPage";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
               element={
                 <div className="flex flex-row w-screen gap-5">
                   <AsideMenue />
-                  <Users />
+                  <UsersPage />
                 </div>
               }
             />

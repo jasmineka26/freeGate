@@ -1,4 +1,4 @@
-import IconType from "../../../models/IconType";
+import IconType from "../../models/IconType";
 
 interface Props {
   children: string;

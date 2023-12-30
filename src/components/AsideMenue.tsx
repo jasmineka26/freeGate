@@ -1,4 +1,4 @@
-import Aside from "./dashboard/Aside";
+import Aside from "./Aside";
 
 const AsideMenue = () => {
   return (
