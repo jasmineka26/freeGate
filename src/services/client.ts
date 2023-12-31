@@ -1,6 +1,7 @@
 import _axios from "axios";
 import User from "../models/User";
 import Config from "../models/Config";
+import Card from "../models/Card";
 
 // let token = "";
 
@@ -21,7 +22,7 @@ const getUsers = async (): Promise<User[]> => {
   return res.data;
 };
 
-const getCards = async () => {
+const getCards = async (): Promise<Card[]> => {
   const res = await axios.get("/cards");
   return res.data;
 };
