@@ -7,6 +7,7 @@ import Config from "./components/ConfigPage";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/LoginPage";
 import UsersPage from "./components/UsersPage";
+import PackesPages from "./components/Packes";
 
 function App() {
   return (
@@ -48,6 +49,15 @@ function App() {
                 <div className="flex flex-row w-screen gap-5">
                   <AsideMenue />
                   <Config />
+                </div>
+              }
+            />
+            <Route
+              path="/packages"
+              element={
+                <div className="flex flex-row w-screen gap-5">
+                  <AsideMenue />
+                  <PackesPages />
                 </div>
               }
             />

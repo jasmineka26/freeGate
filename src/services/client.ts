@@ -2,6 +2,7 @@ import _axios from "axios";
 import User from "../models/User";
 import Config from "../models/Config";
 import Card from "../models/Card";
+import Packes from "../models/packes";
 
 // let token = "";
 
@@ -31,12 +32,17 @@ const getConfigs = async (): Promise<Config[]> => {
   const res = await axios.get("/configs");
   return res.data;
 };
+const getPackes = async (): Promise<Packes[]> => {
+  const res = await axios.get("/packages");
+  return res.data;
+};
 
 const client = Object.freeze({
   login,
   getUsers,
   getCards,
   getConfigs,
+  getPackes,
 });
 export default client;
 

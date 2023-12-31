@@ -22,7 +22,7 @@ const Aside = () => {
     { icon: AdjustmentsHorizontalIcon, name: "کـانفیــگ", url: "/configs" },
     { icon: FunnelIcon, name: "دسته بندی", url: "/sort" },
     { icon: CreditCardIcon, name: "کارت ها", url: "/cards" },
-    { icon: ClipboardDocumentCheckIcon, name: "بسته ها", url: "/packs" },
+    { icon: ClipboardDocumentCheckIcon, name: "بسته ها", url: "/packages" },
   ];
 
   const { pathname } = useLocation();
