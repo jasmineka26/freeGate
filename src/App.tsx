@@ -3,7 +3,7 @@ import { ToastContainer } from "react-toastify";
 import "./App.css";
 import AsideMenue from "./components/AsideMenue";
 import Cards from "./components/Cards";
-import Config from "./components/Config";
+import Config from "./components/ConfigPage";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/LoginPage";
 import UsersPage from "./components/UsersPage";

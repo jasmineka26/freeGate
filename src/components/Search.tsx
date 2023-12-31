@@ -1,36 +1,33 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
 import AddButton from "./AddButton";
 
 interface Props {
-  onSearchChange: (searchWord: string) => void;
+  onSearchChange?: (searchWord: string) => void;
+  buttonTitle: string;
 }
 
-const Search = ({ onSearchChange }: Props) => {
-  const [searchWord, setSearchWord] = useState("");
-
+const Search = ({ onSearchChange, buttonTitle }: Props) => {
   return (
     <div className="flex flex-row p-4 rounded-xl items-center justify-between bg-white shadow-lg">
-      <div className="flex flex-row w-full text-gray-600 justify-start items-center">
-        <div className="flex p-2 bg-blue-700 h-10 items-center justify-center rounded-r-lg">
-          <MagnifyingGlassIcon className="w-4 h-4 text-white" />
-        </div>
-        <input
-          className="border-2 border-r-0 border-gray-300 bg-white h-10 p-4 w-72 rounded-l-lg text-sm"
-          type="search"
-          name="search"
-          placeholder="Search"
-          value={searchWord}
-          onChange={(e) => {
-            setSearchWord(e.target.value);
-            onSearchChange(e.target.value);
-          }}
-        />
-      </div>
-
       <div>
-        <AddButton buttonName="+Add User" />
+        <AddButton buttonName={buttonTitle} />
       </div>
+      {onSearchChange && (
+        <div className="flex flex-row w-full text-gray-600 justify-end items-center">
+          <div className="flex p-2 bg-blue-700 h-10 items-center justify-center rounded-r-lg">
+            <MagnifyingGlassIcon className="w-4 h-4 text-white" />
+          </div>
+          <input
+            className="border-2 border-r-0 border-gray-300 bg-white h-10 p-4 w-72 rounded-l-lg text-sm"
+            type="search"
+            name="search"
+            placeholder="Search"
+            onChange={(e) => {
+              onSearchChange(e.target.value);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };

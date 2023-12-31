@@ -76,7 +76,7 @@ const UsersPage = () => {
 
   return (
     <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
-      <Search onSearchChange={setSearchTerm} />
+      <Search buttonTitle="+Add User" onSearchChange={setSearchTerm} />
       <Table
         items={filteredUsers}
         identifier={(user) => user.id}
