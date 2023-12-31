@@ -3,6 +3,7 @@ import User from "../models/User";
 import Config from "../models/Config";
 import Card from "../models/Card";
 import Packes from "../models/packes";
+import Server from "../models/server";
 
 // let token = "";
 
@@ -36,6 +37,10 @@ const getPackes = async (): Promise<Packes[]> => {
   const res = await axios.get("/packages");
   return res.data;
 };
+const getServers = async (): Promise<Server[]> => {
+  const res = await axios.get("/servers");
+  return res.data;
+};
 
 const client = Object.freeze({
   login,
@@ -43,6 +48,7 @@ const client = Object.freeze({
   getCards,
   getConfigs,
   getPackes,
+  getServers,
 });
 export default client;
 

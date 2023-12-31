@@ -6,6 +6,7 @@ import {
   CreditCardIcon,
   FunnelIcon,
   HomeIcon,
+  ServerIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
 import { useState } from "react";
@@ -19,6 +20,7 @@ const Aside = () => {
     { icon: UserIcon, name: "کاربــران", url: "/users" },
     { icon: BanknotesIcon, name: "پرداخت ها", url: "/payment" },
     { icon: ChartPieIcon, name: "گـزارشـات", url: "/report" },
+    { icon: ServerIcon, name: "ســـرور", url: "/servers" },
     { icon: AdjustmentsHorizontalIcon, name: "کـانفیــگ", url: "/configs" },
     { icon: FunnelIcon, name: "دسته بندی", url: "/sort" },
     { icon: CreditCardIcon, name: "کارت ها", url: "/cards" },
