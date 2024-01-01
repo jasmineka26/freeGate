@@ -18,7 +18,7 @@ const Aside = () => {
   const menuItem = [
     { icon: HomeIcon, name: "داشبــورد", url: "/dashboard" },
     { icon: UserIcon, name: "کاربــران", url: "/users" },
-    { icon: BanknotesIcon, name: "پرداخت ها", url: "/payment" },
+    { icon: BanknotesIcon, name: "پرداخت ها", url: "/payments" },
     { icon: ChartPieIcon, name: "گـزارشـات", url: "/report" },
     { icon: ServerIcon, name: "ســـرور", url: "/servers" },
     { icon: AdjustmentsHorizontalIcon, name: "کـانفیــگ", url: "/configs" },

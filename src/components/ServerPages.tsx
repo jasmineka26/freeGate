@@ -6,8 +6,6 @@ import Search from "./Search";
 import Table from "./Table";
 
 const ServerPages = () => {
-  const Array: string[] = [];
-
   const {
     data: servers,
     error,
