@@ -9,21 +9,21 @@ export default interface Server {
   last_status_date: string;
   server_category_id: number;
   server_category: ServerCategory;
-  inbounds: Inbounds;
+  inbounds: Inbound[];
 }
 
 interface ServerCategory {
   title: string;
 }
 
-interface Inbounds {
+interface Inbound {
   id: number;
   title: string;
-  configs: Configs;
+  configs: Config[];
   active_accounts: number;
 }
 
-interface Configs {
+interface Config {
   id: number;
   title: string;
 }
