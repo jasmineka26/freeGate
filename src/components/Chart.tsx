@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from "react";
 import ApexCharts from "apexcharts";
+import React, { useEffect, useRef } from "react";
 
 interface ChartProps {
   options: ApexCharts.ApexOptions;
-  series: any;
+  series: ApexAxisChartSeries;
   type: string;
   height: number;
 }
