@@ -2,6 +2,7 @@ import React from "react";
 import Chart from "react-apexcharts";
 import useFetch from "../hooks/useFetch";
 import client from "../services/client";
+import moment from "jalali-moment";
 
 const PaymentChart: React.FC = () => {
   const {
@@ -10,11 +11,15 @@ const PaymentChart: React.FC = () => {
     loading,
   } = useFetch(client.getPayments, "payments");
 
+  const convertedDates = payments?.map((p) =>
+    moment(p.created_at, "YYYY-MM-DD").locale("fa").format("YYYY-MM-DD")
+  );
+
   const chartOptions: ApexCharts.ApexOptions = {
     chart: {
       height: "100%",
       width: "100%",
-      type: "area", // Use "area" for area chart
+      type: "area",
       fontFamily: "Inter, sans-serif",
       dropShadow: {
         enabled: false,
@@ -26,7 +31,7 @@ const PaymentChart: React.FC = () => {
     tooltip: {
       enabled: true,
       x: {
-        show: false,
+        show: true,
       },
     },
     fill: {
@@ -34,7 +39,7 @@ const PaymentChart: React.FC = () => {
       gradient: {
         opacityFrom: 0.55,
         opacityTo: 0,
-        shade: "#1C64F2",
+        shade: "#0000ff",
         gradientToColors: ["#1C64F2"],
       },
     },
@@ -42,11 +47,11 @@ const PaymentChart: React.FC = () => {
       enabled: false,
     },
     stroke: {
-      width: 4,
+      width: 3,
     },
     grid: {
-      show: false,
-      strokeDashArray: 4,
+      show: true,
+      strokeDashArray: 0,
       padding: {
         left: 2,
         right: 2,
@@ -55,26 +60,18 @@ const PaymentChart: React.FC = () => {
     },
     series: [
       {
-        name: "New users",
-        data: payments?.map((payment) => payment.paid) || [],
+        name: "Payments Chart",
         color: "#1A56DB",
+        data: payments?.map((p) => p.paid) || [],
       },
     ],
     xaxis: {
-      categories: [
-        "01 February",
-        "02 February",
-        "03 February",
-        "04 February",
-        "05 February",
-        "06 February",
-        "07 February",
-      ],
+      categories: convertedDates || [],
       labels: {
-        show: false,
+        show: true,
       },
       axisBorder: {
-        show: false,
+        show: true,
       },
       axisTicks: {
         show: false,
@@ -86,12 +83,12 @@ const PaymentChart: React.FC = () => {
   };
 
   return (
-    <div className="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+    <div>
       <Chart
         options={chartOptions}
         series={[
           {
-            name: "New users",
+            name: "  گزارش پرداخت ها  ",
             data: payments?.map((payment) => payment.paid) || [],
           },
         ]}

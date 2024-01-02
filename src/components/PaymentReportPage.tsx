@@ -7,7 +7,7 @@ const PaymentReportPage = () => {
       <Date />
       <div className="flex w-full h-full bg-gray-200 rounded-xl gap-5">
         <div className="flex rounded-xl shadow-lg bg-white w-[50%]">111</div>
-        <div className="flex rounded-xl shadow-lg bg-white w-[50%]">
+        <div className="flex rounded-xl shadow-lg bg-white w-[50%] items-center justify-center">
           <PaymentChart />
         </div>
       </div>
