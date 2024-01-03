@@ -28,49 +28,37 @@ const ReportPaymentTable: React.FC<IProps> = ({ reports }) => {
               </tr>
             </thead>
             <tbody className="text-center">
-              {owners.map((owner) => {
-                return (
-                  <>
-                    <tr key={owner.ownerId}>
-                      <td
-                        rowSpan={2}
-                        className="px-6 py-4 font-medium text-gray-900"
-                      >
-                        {owner.ownerId}
-                      </td>
-                      <td
-                        rowSpan={2}
-                        className="px-6 py-4  border-gray-200 border-x-2"
-                      >
-                        {owner.ownerName}
-                      </td>
-                      <td
-                        rowSpan={1}
-                        className="px-6 py-4  border-gray-200 border-l-2"
-                      >
-                        {owner.cards.map((card) => card.title)}
-                      </td>
-                      <td rowSpan={1} className="px-6 py-4">
-                        {owner.total}
-                      </td>
-                    </tr>
-                    <tr className="border-gray-200 border-y-2">
-                      <td
-                        rowSpan={1}
-                        className="px-6 py-4  border-gray-200 border-l-2"
-                      >
-                        2
-                      </td>
-                      <td rowSpan={1} className="px-6 py-4"></td>
-                    </tr>
-                  </>
-                );
+              {owners.map(({ cards, ownerId, ownerName, total }) => {
+                return cards.map((c, i) => (
+                  <tr>
+                    {i === 0 && (
+                      <>
+                        <td
+                          className="px-6 py-4 font-medium text-gray-900"
+                          rowSpan={cards.length}
+                        >
+                          {ownerId}
+                        </td>
+                        <td
+                          className="px-6 py-4  border-gray-200 border-x-2"
+                          rowSpan={cards.length}
+                        >
+                          {ownerName + " - " + total}
+                        </td>
+                      </>
+                    )}
+                    <td className="px-6 py-4  border-gray-200 border-l-2">
+                      {c.title}
+                    </td>
+                    <td>{c.total}</td>
+                  </tr>
+                ));
               })}
               <tr>
                 <td className="px-6 py-4"></td>
                 <td className="px-6 py-4"></td>
-                <td className="px-6 py-4"></td>
-                <td className="px-6 py-4">جمع</td>
+                <td className="px-6 py-4">جمــــــــع:</td>
+                <td className="px-6 py-4">{reports.total}</td>
               </tr>
             </tbody>
           </table>
