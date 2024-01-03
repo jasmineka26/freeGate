@@ -1,9 +1,8 @@
+import moment from "jalali-moment";
 import React from "react";
 import Chart from "react-apexcharts";
 import useFetch from "../hooks/useFetch";
 import client from "../services/client";
-import moment from "jalali-moment";
-import FindSumOfPaymentMonthly from "./FindSumOfPaymentMonthly";
 import findMonthlyPayments from "./FindSumOfPaymentMonthly";
 
 const PaymentChart: React.FC = () => {
