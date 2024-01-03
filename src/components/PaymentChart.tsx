@@ -3,6 +3,8 @@ import Chart from "react-apexcharts";
 import useFetch from "../hooks/useFetch";
 import client from "../services/client";
 import moment from "jalali-moment";
+import FindSumOfPaymentMonthly from "./FindSumOfPaymentMonthly";
+import findMonthlyPayments from "./FindSumOfPaymentMonthly";
 
 const PaymentChart: React.FC = () => {
   const {
@@ -10,6 +12,8 @@ const PaymentChart: React.FC = () => {
     error,
     loading,
   } = useFetch(client.getPayments, "payments");
+
+  const price = payments.map((p) => p.paid);
 
   const convertedDates = payments?.map((p) =>
     moment(p.created_at, "YYYY-MM-DD").locale("fa").format("YYYY-MM-DD")
@@ -66,7 +70,8 @@ const PaymentChart: React.FC = () => {
       },
     ],
     xaxis: {
-      categories: convertedDates || [],
+      categories:
+        findMonthlyPayments(convertedDates, price).map((d) => d.month) || [],
       labels: {
         show: true,
       },
@@ -89,7 +94,9 @@ const PaymentChart: React.FC = () => {
         series={[
           {
             name: "  گزارش پرداخت ها  ",
-            data: payments?.map((payment) => payment.paid) || [],
+            data: findMonthlyPayments(convertedDates, price).map(
+              (d) => d.totalPaid
+            ),
           },
         ]}
         type="area"
