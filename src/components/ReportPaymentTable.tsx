@@ -48,10 +48,10 @@ const ReportPaymentTable: React.FC<IProps> = ({ reports }) => {
                         rowSpan={1}
                         className="px-6 py-4  border-gray-200 border-l-2"
                       >
-                        1
+                        {owner.cards.map((card) => card.title)}
                       </td>
                       <td rowSpan={1} className="px-6 py-4">
-                        1
+                        {owner.total}
                       </td>
                     </tr>
                     <tr className="border-gray-200 border-y-2">
