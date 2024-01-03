@@ -60,7 +60,7 @@ const PaymentsPage = () => {
       <td className="px-6 py-4">{payment.dest_card.title}</td>
       <td className="px-6 py-4">
         {moment(moment.from(payment.created_at, "en")).format(
-          "HH:mm YYYY/MM/DD"
+          "YYYY/MM/DD HH:mm "
         )}
       </td>
       <td className="px-6 py-4">???</td>

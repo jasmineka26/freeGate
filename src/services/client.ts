@@ -1,10 +1,11 @@
 import _axios from "axios";
-import User from "../models/User";
-import Config from "../models/Config";
 import Card from "../models/Card";
+import Config from "../models/Config";
+import User from "../models/User";
 import Packes from "../models/packes";
-import Server from "../models/server";
 import Payment from "../models/payments";
+import Server from "../models/server";
+import ReportPayment from "../models/ReportPayment";
 
 // let token = "";
 
@@ -16,6 +17,8 @@ const login = async (username: string, password: string) => {
   const res = await axios.post("/Login", { username, password });
   const token = res.data;
   localStorage.setItem(AUTH_KEY, token);
+  // const decoded = jwtDecode(token);
+  // console.log(decoded);
   axios = createAxiosInstance(token);
   return res.data;
 };
@@ -46,6 +49,13 @@ const getPayments = async (): Promise<Payment[]> => {
   const res = await axios.get("/payments");
   return res.data;
 };
+const getReportPayments = async (
+  startDate: Date,
+  endDate: Date
+): Promise<ReportPayment> => {
+  const res = await axios.post("/reports/payment", { startDate, endDate });
+  return res.data;
+};
 
 const client = Object.freeze({
   login,
@@ -55,6 +65,7 @@ const client = Object.freeze({
   getPackes,
   getServers,
   getPayments,
+  getReportPayments,
 });
 export default client;
 
