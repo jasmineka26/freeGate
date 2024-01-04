@@ -22,7 +22,7 @@ function App() {
             <Route
               path="/users"
               element={
-                <div className="flex flex-row w-screen gap-5">
+                <div className="flex flex-row w-screen gap-5 ">
                   <AsideMenue />
                   <UsersPage />
                 </div>

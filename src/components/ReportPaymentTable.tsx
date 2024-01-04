@@ -43,7 +43,7 @@ const ReportPaymentTable: React.FC<IProps> = ({ reports }) => {
                           className="px-6 py-4 border-gray-200 border-b-2"
                           rowSpan={cards.length}
                         >
-                          {ownerName + " - " + total}
+                          {ownerName + " - " + total.toLocaleString()}
                         </td>
                       </>
                     )}
@@ -51,7 +51,7 @@ const ReportPaymentTable: React.FC<IProps> = ({ reports }) => {
                       {c.title}
                     </td>
                     <td className="px-6 py-4 border-gray-200 border-b-2">
-                      {c.total}
+                      {c.total.toLocaleString()}
                     </td>
                   </tr>
                 ));
@@ -62,7 +62,7 @@ const ReportPaymentTable: React.FC<IProps> = ({ reports }) => {
                 <td className="px-6 py-4  border-gray-200 border-l-2 font-black">
                   جمــــــــع:
                 </td>
-                <td className="px-6 py-4">{reports.total}</td>
+                <td className="px-6 py-4">{reports.total.toLocaleString()}</td>
               </tr>
             </tbody>
           </table>

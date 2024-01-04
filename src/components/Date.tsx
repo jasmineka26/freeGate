@@ -64,7 +64,7 @@ const Date: React.FC<IProps> = ({ onDatePicked }) => {
           onChange={setEndDate}
           plugins={[
             <TimePicker hideSeconds />,
-            // <Toolbar position="bottom" sort={["deselect", "close", "today"]} />,
+            <Toolbar position="bottom" sort={["deselect", "close", "today"]} />,
           ]}
         />
       </div>
@@ -73,7 +73,7 @@ const Date: React.FC<IProps> = ({ onDatePicked }) => {
           onClick={handleCreate}
           className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
         >
-          ایجــــــــاد
+          ایــجــــــــاد
         </button>
       </div>
     </div>
