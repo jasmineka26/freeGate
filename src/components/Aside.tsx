@@ -22,7 +22,7 @@ const Aside = () => {
     { icon: ChartPieIcon, name: "گـزارشـات", url: "/report" },
     { icon: ServerIcon, name: "ســـرور", url: "/servers" },
     { icon: AdjustmentsHorizontalIcon, name: "کـانفیــگ", url: "/configs" },
-    { icon: FunnelIcon, name: "دسته بندی", url: "/sort" },
+    { icon: FunnelIcon, name: "دسته بندی", url: "/categories" },
     { icon: CreditCardIcon, name: "کارت ها", url: "/cards" },
     { icon: ClipboardDocumentCheckIcon, name: "بسته ها", url: "/packages" },
   ];

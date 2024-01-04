@@ -11,6 +11,7 @@ import PackesPages from "./components/Packes";
 import ServerPages from "./components/ServerPages";
 import PaymentsPage from "./components/PaymentsPage";
 import PaymentReportPage from "./components/PaymentReportPage";
+import CategoriesPage from "./components/CategoriesPage";
 
 function App() {
   return (
@@ -88,6 +89,15 @@ function App() {
                 <div className="flex flex-row w-screen gap-5">
                   <AsideMenue />
                   <PaymentReportPage />
+                </div>
+              }
+            />
+            <Route
+              path="/categories"
+              element={
+                <div className="flex flex-row w-screen gap-5">
+                  <AsideMenue />
+                  <CategoriesPage />
                 </div>
               }
             />

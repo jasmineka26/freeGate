@@ -4,13 +4,14 @@ import AddButton from "./AddButton";
 interface Props {
   onSearchChange?: (searchWord: string) => void;
   buttonTitle: string;
+  onClicked: () => void;
 }
 
-const Search = ({ onSearchChange, buttonTitle }: Props) => {
+const Search = ({ onSearchChange, buttonTitle, onClicked }: Props) => {
   return (
     <div className="flex flex-row p-4 rounded-xl items-center justify-between bg-white shadow-lg">
       <div>
-        <AddButton buttonName={buttonTitle} />
+        <AddButton handleClicked={onClicked} buttonName={buttonTitle} />
       </div>
       {onSearchChange && (
         <div className="flex flex-row w-full text-gray-600 justify-end items-center">
