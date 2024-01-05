@@ -40,24 +40,26 @@ const Aside = () => {
   };
 
   return (
-    <aside
-      className={`bg-gradient-to-br from-gray-800 to-gray-900  inset-0 z-50 my-4 mr-4 h-[calc(100vh-32px)] overflow-auto
+    <div className="flex justify-center items-center p-5">
+      <aside
+        className={`bg-gradient-to-br from-gray-800 to-gray-900 overflow-auto
      w-72 rounded-xl `}
-    >
-      <div className="relative border-b border-white/20">
-        <Header />
-      </div>
-      {menuItem.map((item) => (
-        <AsideButton
-          key={item.name}
-          icon={item.icon}
-          color={selectedButton === item.url ? "blue" : "#1e293b"}
-          onClick={() => handleButtonClick(item.url)}
-        >
-          {item.name}
-        </AsideButton>
-      ))}
-    </aside>
+      >
+        <div className="relative border-b border-white/20">
+          <Header />
+        </div>
+        {menuItem.map((item) => (
+          <AsideButton
+            key={item.name}
+            icon={item.icon}
+            color={selectedButton === item.url ? "blue" : "#1e293b"}
+            onClick={() => handleButtonClick(item.url)}
+          >
+            {item.name}
+          </AsideButton>
+        ))}
+      </aside>
+    </div>
   );
 };
 

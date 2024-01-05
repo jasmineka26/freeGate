@@ -73,10 +73,17 @@ const UsersPage = () => {
     users,
     handleFilter
   );
+  const onClick = () => {
+    console.log("coming soon");
+  };
 
   return (
     <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
-      <Search buttonTitle="+Add User" onSearchChange={setSearchTerm} />
+      <Search
+        buttonTitle="+Add User"
+        onSearchChange={setSearchTerm}
+        onClicked={onClick}
+      />
       <Table
         items={filteredUsers}
         identifier={(user) => user.id}

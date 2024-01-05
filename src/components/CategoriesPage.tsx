@@ -1,3 +1,18 @@
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
+import React from "react";
 import useFetch from "../hooks/useFetch";
 import Category from "../models/Categories";
 import client from "../services/client";
@@ -10,6 +25,11 @@ const CategoriesPage = () => {
     error,
     loading,
   } = useFetch(client.getCategories, "categories");
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const initialRef = React.useRef(null);
+  const finalRef = React.useRef(null);
 
   const headerItems = () => (
     <>
@@ -35,21 +55,56 @@ const CategoriesPage = () => {
   );
 
   const clickedAddCategory = async () => {
+    onOpen();
     console.log(categories);
   };
 
   return (
-    <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
-      <Search onClicked={clickedAddCategory} buttonTitle="+Add Cate" />
-      <Table
-        items={categories}
-        identifier={(category) => category.id}
-        headerItems={headerItems}
-        renderItem={renderItem}
-        loading={loading}
-        error={error}
-      />
-    </div>
+    <>
+      <div>
+        <Modal
+          initialFocusRef={initialRef}
+          finalFocusRef={finalRef}
+          isOpen={isOpen}
+          onClose={onClose}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Create your account</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody pb={6}>
+              <FormControl>
+                <FormLabel>First name</FormLabel>
+                <Input ref={initialRef} placeholder="First name" />
+              </FormControl>
+
+              <FormControl mt={4}>
+                <FormLabel>Last name</FormLabel>
+                <Input placeholder="Last name" />
+              </FormControl>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3}>
+                Save
+              </Button>
+              <Button onClick={onClose}>Cancel</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </div>
+      <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
+        <Search onClicked={clickedAddCategory} buttonTitle="+Add Cate" />
+        <Table
+          items={categories}
+          identifier={(category) => category.id}
+          headerItems={headerItems}
+          renderItem={renderItem}
+          loading={loading}
+          error={error}
+        />
+      </div>
+    </>
   );
 };
 

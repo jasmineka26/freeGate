@@ -16,7 +16,7 @@ import CategoriesPage from "./components/CategoriesPage";
 function App() {
   return (
     <>
-      <div dir="rtl" className="font-sans">
+      <div dir="rtl" className="font-sans bg-gray-200">
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Login />} />
@@ -32,7 +32,7 @@ function App() {
             <Route
               path="/dashboard"
               element={
-                <div className="flex flex-row w-screen gap-5">
+                <div className="flex flex-row w-screen gap-5 ">
                   <AsideMenue />
                   <Dashboard />
                 </div>
@@ -46,7 +46,7 @@ function App() {
                   <CardsPage />
                 </div>
               }
-            />{" "}
+            />
             <Route
               path="/configs"
               element={

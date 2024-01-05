@@ -26,8 +26,8 @@ const Table = <T,>({
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-200 pt-3 gap-5">
-      <div className="flex rounded-xl overflow-hidden shadow-xl">
+    <div className="flex flex-col h-screen bg-gray-200 gap-5 overflow-auto rounded-xl">
+      <div className="flex shadow-xl">
         <div className="w-full">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
             <thead>
