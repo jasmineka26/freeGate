@@ -25,9 +25,14 @@ const CategoriesPage = () => {
     error,
     loading,
   } = useFetch(client.getCategories, "categories");
-
+  const OverlayOne = () => (
+    <ModalOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [overlay, setOverlay] = React.useState(<OverlayOne />);
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
@@ -55,8 +60,8 @@ const CategoriesPage = () => {
   );
 
   const clickedAddCategory = async () => {
+    setOverlay(<OverlayOne />);
     onOpen();
-    console.log(categories);
   };
 
   return (
@@ -68,6 +73,7 @@ const CategoriesPage = () => {
           isOpen={isOpen}
           onClose={onClose}
         >
+          {overlay}
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Create your account</ModalHeader>
