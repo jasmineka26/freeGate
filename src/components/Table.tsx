@@ -2,7 +2,7 @@ import React from "react";
 
 interface IProps<T> {
   items: T[];
-  renderItem: (item: T) => React.ReactNode;
+  renderItem: (item: T, index: number) => React.ReactNode;
   headerItems: () => React.ReactNode;
   identifier: (item: T) => string | number;
   loading: boolean;
@@ -44,7 +44,7 @@ const Table = <T,>({
                   } border-b`}
                 >
                   {/* ... Render item rows ... */}
-                  {renderItem(item)}
+                  {renderItem(item, index)}
                 </tr>
               ))}
             </tbody>

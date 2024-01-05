@@ -17,7 +17,7 @@ const useFetch = <T>(fetchData: () => Promise<T[]>, title: string) => {
       });
   }, [fetchData, title]);
 
-  return { data, error, loading };
+  return { data, error, loading, setData };
 };
 
 export default useFetch;

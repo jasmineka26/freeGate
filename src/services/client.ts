@@ -1,13 +1,12 @@
 import _axios from "axios";
 import Card from "../models/Card";
+import Category from "../models/Category";
 import Config from "../models/Config";
+import ReportPayment from "../models/ReportPayment";
 import User from "../models/User";
 import Packes from "../models/packes";
 import Payment from "../models/payments";
 import Server from "../models/server";
-import ReportPayment from "../models/ReportPayment";
-import Category from "../models/Categories";
-import AddCategory from "../models/AddCategory";
 
 // let token = "";
 
@@ -55,20 +54,8 @@ const getCategories = async (): Promise<Category[]> => {
   const res = await axios.get("/categories");
   return res.data;
 };
-const getAddCategories = async ({
-  title,
-  address,
-  xui_port,
-  xui_user,
-  xui_pass,
-}: AddCategory): Promise<AddCategory> => {
-  const res = await axios.post("/categories/meli", {
-    title,
-    address,
-    xui_port,
-    xui_user,
-    xui_pass,
-  });
+const addCategory = async (title: string): Promise<Category> => {
+  const res = await axios.post(`/categories/${title}`);
   return res.data;
 };
 const getReportPayments = async (
@@ -89,7 +76,7 @@ const client = Object.freeze({
   getPayments,
   getReportPayments,
   getCategories,
-  getAddCategories,
+  addCategory,
 });
 export default client;
 
