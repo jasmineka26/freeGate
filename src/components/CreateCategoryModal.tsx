@@ -8,14 +8,10 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
-  useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import useFetch from "../hooks/useFetch";
+import { useState } from "react";
 import Category from "../models/Category";
 import client from "../services/client";
-import Search from "./Search";
-import Table from "./Table";
 
 interface Props {
   isOpen: boolean;
@@ -24,8 +20,6 @@ interface Props {
 }
 const CreateCategoryModal = ({ isOpen, onClose, onCategoryAdded }: Props) => {
   const [value, setValue] = useState("");
-  const initialRef = React.useRef(null);
-  const finalRef = React.useRef(null);
 
   const handleAddCategory = async () => {
     const category = await client.addCategory(value);
@@ -34,12 +28,7 @@ const CreateCategoryModal = ({ isOpen, onClose, onCategoryAdded }: Props) => {
   };
 
   return (
-    <Modal
-      initialFocusRef={initialRef}
-      finalFocusRef={finalRef}
-      isOpen={isOpen}
-      onClose={onClose}
-    >
+    <Modal isOpen={isOpen} onClose={onClose}>
       {isOpen && (
         <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px)" />
       )}
@@ -52,11 +41,10 @@ const CreateCategoryModal = ({ isOpen, onClose, onCategoryAdded }: Props) => {
             <FormLabel>ایجـــــــــاد دستــــــه بنــــــدی</FormLabel>
             <Input
               dir="rtl"
-              ref={initialRef}
               placeholder="عنــــــوان"
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              className="w-[0%] h-10 rounded-lg px-3 bg-transparent bg-slate-700 py-2 shadow-lg"
+              className="w-[90%] h-10 rounded-lg px-3 bg-transparent bg-slate-700 py-2 shadow-lg"
             />
           </FormControl>
 

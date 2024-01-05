@@ -1,25 +1,14 @@
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalOverlay,
-  useDisclosure,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useDisclosure } from "@chakra-ui/react";
 import useFetch from "../hooks/useFetch";
 import Category from "../models/Category";
 import client from "../services/client";
+import CreateCategoryModal from "./CreateCategoryModal";
 import Search from "./Search";
 import Table from "./Table";
-import CreateCategoryModal from "./CreateCategoryModal";
+import { useState } from "react";
 
 const CategoriesPage = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
   const {
     data: categories,
     setData: setCategories,
@@ -50,10 +39,18 @@ const CategoriesPage = () => {
     </>
   );
 
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   return (
     <>
       <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
-        <Search onClicked={onOpen} buttonTitle="+Add Cate" />
+        <Search onClicked={handleOpen} buttonTitle="+Add Cate" />
         <Table
           items={categories}
           identifier={(category) => category.id}
@@ -65,7 +62,7 @@ const CategoriesPage = () => {
       </div>
       <CreateCategoryModal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClose}
         onCategoryAdded={(category) => setCategories([...categories, category])}
       />
     </>
