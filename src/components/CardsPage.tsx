@@ -1,11 +1,19 @@
+import { useState } from "react";
 import useFetch from "../hooks/useFetch";
 import Card from "../models/Card";
 import client from "../services/client";
 import Search from "./Search";
 import Table from "./Table";
+import CreateCardModal from "./CreateCardModal";
 
 const CardsPage = () => {
-  const { data: cards, error, loading } = useFetch(client.getCards, "cards");
+  const [isOpen, setIsOpen] = useState(false);
+  const {
+    data: cards,
+    setData: setCards,
+    error,
+    loading,
+  } = useFetch(client.getCards, "cards");
 
   const headerItems = () => (
     <>
@@ -42,18 +50,33 @@ const CardsPage = () => {
     </>
   );
 
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
-      <Search buttonTitle="+Add config" />
-      <Table
-        items={cards}
-        identifier={(card) => card.id}
-        headerItems={headerItems}
-        renderItem={renderItem}
-        loading={loading}
-        error={error}
+    <>
+      <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
+        <Search buttonTitle="+Add config" onClicked={handleOpen} />
+        <Table
+          items={cards}
+          identifier={(card) => card.id}
+          headerItems={headerItems}
+          renderItem={renderItem}
+          loading={loading}
+          error={error}
+        />
+      </div>
+      <CreateCardModal
+        isOpen={isOpen}
+        onClose={handleClose}
+        onCategoryAdded={(card) => setCards([...cards, card])}
       />
-    </div>
+    </>
   );
 };
 

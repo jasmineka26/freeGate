@@ -58,6 +58,20 @@ const addCategory = async (title: string): Promise<Category> => {
   const res = await axios.post(`/categories/${title}`);
   return res.data;
 };
+const addCard = async (
+  title: string,
+  card_number: string,
+  card_owner_name: string,
+  owner_id: number
+): Promise<Card> => {
+  const res = await axios.post("/cards", {
+    title,
+    card_number,
+    card_owner_name,
+    owner_id,
+  });
+  return res.data;
+};
 const getReportPayments = async (
   startDate: Date,
   endDate: Date
@@ -77,6 +91,7 @@ const client = Object.freeze({
   getReportPayments,
   getCategories,
   addCategory,
+  addCard,
 });
 export default client;
 
