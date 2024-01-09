@@ -2,7 +2,7 @@ import { useState } from "react";
 import useFetch from "../hooks/useFetch";
 import Category from "../models/Category";
 import client from "../services/client";
-import CreateItemModal from "./CreateCategoryModal";
+import CreateCategoryModal from "./CreateCategoryModal";
 import Search from "./Search";
 import Table from "./Table";
 
@@ -46,19 +46,6 @@ const CategoriesPage = () => {
     setIsOpen(false);
   };
 
-  const handleSubmit = async (
-    data: Record<string, string>
-  ): Promise<Category> => {
-    try {
-      const category = await client.addCategory(data.title);
-      setCategories((prevCategories) => [...prevCategories, category]);
-      return category;
-    } catch (error) {
-      console.error("Error adding category:", error);
-      throw error;
-    }
-  };
-
   return (
     <>
       <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
@@ -72,11 +59,10 @@ const CategoriesPage = () => {
           error={error}
         />
       </div>
-      <CreateItemModal<Category>
+      <CreateCategoryModal
         isOpen={isOpen}
         onClose={handleClose}
-        onSubmit={handleSubmit}
-        items={[{ label: "Title", placeholder: "Enter title", type: "text" }]}
+        onCategoryAdded={(category) => setCategories([...categories, category])}
       />
     </>
   );
