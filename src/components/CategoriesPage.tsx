@@ -1,11 +1,10 @@
-import { useDisclosure } from "@chakra-ui/react";
+import { useState } from "react";
 import useFetch from "../hooks/useFetch";
 import Category from "../models/Category";
 import client from "../services/client";
-import CreateCategoryModal from "./CreateCategoryModal";
+import CreateItemModal from "./CreateCategoryModal";
 import Search from "./Search";
 import Table from "./Table";
-import { useState } from "react";
 
 const CategoriesPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,6 +46,19 @@ const CategoriesPage = () => {
     setIsOpen(false);
   };
 
+  const handleSubmit = async (
+    data: Record<string, string>
+  ): Promise<Category> => {
+    try {
+      const category = await client.addCategory(data.title);
+      setCategories((prevCategories) => [...prevCategories, category]);
+      return category;
+    } catch (error) {
+      console.error("Error adding category:", error);
+      throw error;
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
@@ -60,10 +72,11 @@ const CategoriesPage = () => {
           error={error}
         />
       </div>
-      <CreateCategoryModal
+      <CreateItemModal<Category>
         isOpen={isOpen}
         onClose={handleClose}
-        onCategoryAdded={(category) => setCategories([...categories, category])}
+        onSubmit={handleSubmit}
+        items={[{ label: "Title", placeholder: "Enter title", type: "text" }]}
       />
     </>
   );

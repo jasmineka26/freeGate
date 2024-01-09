@@ -38,12 +38,11 @@ const Table = <T,>({
             <tbody className="text-center">
               {items.map((item, index) => (
                 <tr
-                  key={identifier(item)} // Assuming index is a suitable key
+                  key={identifier(item)}
                   className={`${
                     index % 2 === 0 ? "bg-white" : "bg-gray-100"
                   } border-b`}
                 >
-                  {/* ... Render item rows ... */}
                   {renderItem(item, index)}
                 </tr>
               ))}

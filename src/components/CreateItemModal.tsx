@@ -10,20 +10,36 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import Category from "../models/Category";
-import client from "../services/client";
 
-interface Props {
+interface ItemProps {
+  label: string;
+  placeholder: string;
+  type: string;
+}
+
+export interface Props<T> {
   isOpen: boolean;
   onClose: () => void;
-  onCategoryAdded: (category: Category) => void;
+  onSubmit: (data: Record<string, string>) => Promise<T>;
+  items: ItemProps[];
 }
-const CreateCategoryModal = ({ isOpen, onClose, onCategoryAdded }: Props) => {
-  const [value, setValue] = useState("");
+const CreateItemModal = <T,>({
+  isOpen,
+  onClose,
+  onSubmit,
+  items,
+}: Props<T>) => {
+  const [formValues, setFormValues] = useState<Record<string, string>>({});
 
-  const handleAddCategory = async () => {
-    const category = await client.addCategory(value);
-    onCategoryAdded(category);
+  const handleInputChange = (value: string, index: number) => {
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [items[index].label]: value,
+    }));
+  };
+
+  const handleAddItems = () => {
+    onSubmit(formValues);
     onClose();
   };
 
@@ -38,20 +54,25 @@ const CreateCategoryModal = ({ isOpen, onClose, onCategoryAdded }: Props) => {
           className="w-[30%] h-[30%] bg-slate-800 rounded-xl flex flex-col justify-center items-center gap-9"
         >
           <FormControl className="flex flex-col w-full gap-5 text-white justify-center items-center ">
-            <FormLabel>ایجـــــــــاد دستــــــه بنــــــدی</FormLabel>
-            <Input
-              dir="rtl"
-              placeholder="عنــــــوان"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              className="w-[90%] h-10 rounded-lg px-3 bg-transparent bg-slate-700 py-2 shadow-lg"
-            />
+            {items.map((item, index) => (
+              <div key={index}>
+                <FormLabel>{item.label}</FormLabel>
+                <Input
+                  dir="rtl"
+                  placeholder={item.placeholder}
+                  value={formValues[item.label] || ""}
+                  onChange={(e) => handleInputChange(e.target.value, index)}
+                  type={item.type}
+                  className="w-[90%] h-10 rounded-lg px-3 bg-transparent bg-slate-700 py-2 shadow-lg"
+                />
+              </div>
+            ))}
           </FormControl>
 
           <ModalFooter className="flex gap-5 text-white justify-center items-center">
             <Button
               className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
-              onClick={handleAddCategory}
+              onClick={handleAddItems}
             >
               Save
             </Button>
@@ -68,4 +89,4 @@ const CreateCategoryModal = ({ isOpen, onClose, onCategoryAdded }: Props) => {
   );
 };
 
-export default CreateCategoryModal;
+export default CreateItemModal;
