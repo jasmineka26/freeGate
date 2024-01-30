@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: iransans;
+  src: url("/src/assets/fonts/iransans-light.woff2") format("woff2"),
+    url("/src/assets/fonts/iransans-light.woff") format("woff");
+}
+
+body {
+  /* background-image: url("./assets/background.jpg"); */
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  font-family: iransans;
+}
+
+.iransans {
+  font-family: iransans;
+}
