@@ -7,6 +7,7 @@ import CreateSubscription from "./CreateSubscription";
 import CreateUserModal from "./CreateUserModal";
 import Search from "./Search";
 import Table from "./Table";
+import Inbound from "../models/Inbound";
 
 const UsersPage = () => {
   const {
@@ -18,12 +19,19 @@ const UsersPage = () => {
   const { data: cards } = useFetch(client.getCards, "cards");
   const { data: servers } = useFetch(client.getServers, "servers");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedInbounds, setSelectedInbounds] = useState<
+    Inbound[] | undefined
+  >(undefined);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenSitu, setIsOpenSitu] = useState(false);
 
   const handleOnUserClicked = async (user: User) => {
     setSelectedUser(user);
     setIsOpen(true);
+    const inbounds = await client.getInboundsByServerId(
+      Number(user.server_id ? user.server_id : 0)
+    );
+    setSelectedInbounds(inbounds);
   };
 
   const headerItems = () => (
@@ -134,6 +142,7 @@ const UsersPage = () => {
 
       <CreateUserModal
         selectedUser={selectedUser}
+        selectedInbounds={selectedInbounds}
         users={users}
         servers={servers}
         isOpen={isOpen}
@@ -141,6 +150,7 @@ const UsersPage = () => {
         cards={cards}
         onUserAdded={(newUser) => {
           setUsers((prevUsers) => [...prevUsers, newUser]);
+          setSelectedUser(newUser);
         }}
         onUserUpdated={(updatedUser) => {
           setUsers((prevUsers) =>

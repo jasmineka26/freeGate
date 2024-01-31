@@ -25,6 +25,7 @@ interface Props {
   onUserUpdated: (user: User) => void;
   cards: Card[];
   selectedUser: User | null;
+  selectedInbounds: Inbound[] | undefined;
   users: User[];
   servers: Server[];
 }
@@ -34,6 +35,7 @@ const CreateUserModal = ({
   onUserAdded,
   cards,
   selectedUser,
+  selectedInbounds,
   users,
   servers,
 }: Props) => {
@@ -52,12 +54,15 @@ const CreateUserModal = ({
 
   const [selectedServerInbounds, setSelectedServerInbounds] = useState<
     Inbound[] | undefined
-  >(undefined);
+  >(selectedInbounds);
 
-  // const [inbound, setInbound] = useState<Inbound[]>([]);
+  useEffect(() => {
+    if (isUpdateDilaog && selectedInbounds) {
+      setSelectedServerInbounds(selectedInbounds);
+    }
+  }, [selectedInbounds]);
 
   const isUpdateDilaog = !!selectedUser;
-
   const handleChangeServer = async (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
