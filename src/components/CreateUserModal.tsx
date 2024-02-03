@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import Card from "../models/Card";
-import Inbound from "../models/Inbound";
+import Inbound, { XrayAccount } from "../models/Inbound";
 import Server from "../models/Server";
 import User, { Role } from "../models/User";
 import client from "../services/client";
@@ -33,28 +33,31 @@ const CreateUserModal = ({
   isOpen,
   onClose,
   onUserAdded,
+  onUserUpdated,
   cards,
   selectedUser,
   selectedInbounds,
   users,
   servers,
 }: Props) => {
+  const isUpdateDilaog = !!selectedUser;
+
   const [selectedServerId, setSelectedServerId] = useState<number | undefined>(
     selectedUser?.server_id
   );
 
-  useEffect(() => {
-    setSelectedServerId(selectedUser?.server_id);
-  }, [selectedUser?.server_id]);
+  const [selectedServerInbounds, setSelectedServerInbounds] = useState<
+    Inbound[] | undefined
+  >(selectedInbounds);
 
   const selectedServer = useMemo(
     () => servers.find((s) => s.id === selectedServerId),
     [selectedServerId, servers]
   );
 
-  const [selectedServerInbounds, setSelectedServerInbounds] = useState<
-    Inbound[] | undefined
-  >(selectedInbounds);
+  useEffect(() => {
+    setSelectedServerId(selectedUser?.server_id);
+  }, [selectedUser?.server_id]);
 
   useEffect(() => {
     if (isUpdateDilaog && selectedInbounds) {
@@ -62,7 +65,6 @@ const CreateUserModal = ({
     }
   }, [selectedInbounds]);
 
-  const isUpdateDilaog = !!selectedUser;
   const handleChangeServer = async (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -86,7 +88,21 @@ const CreateUserModal = ({
     const server_id = Number(formData.get("server"));
 
     if (isUpdateDilaog) {
-      toast.error("not implemented yet");
+      const changedUser = await client.UpdateUser(
+        selectedUser.id,
+        name,
+        os,
+        password,
+        payment_card_id,
+        referer_id,
+        role_id,
+        server_id,
+        username,
+        selectedUser.xrayAccounts.map((i) => i.id)
+      );
+      console.log(changedUser);
+      onUserUpdated(changedUser);
+      toast.success(`User ${changedUser.name} Updated`);
       // onClose();
     } else {
       const newUser = await client.addUser({
@@ -105,9 +121,31 @@ const CreateUserModal = ({
     }
   };
 
-  const handleAddXrayAccount = async () => {
-    console.log(selectedUser?.id);
-    // const xray = await client.addXray();
+  const handleAddXrayAccount = async (inbound: Inbound) => {
+    const xray = await client.addXray(inbound.id, selectedUser!.id);
+    const newXray: XrayAccount = {
+      id: xray.id,
+      is_active: false,
+      uid: selectedUser!.id,
+      xray_username: xray.username,
+    };
+
+    setSelectedServerInbounds((inbounds) => {
+      const newInbounds = [...inbounds!];
+      const found = newInbounds.find((i) => i.id === inbound.id);
+      found!.XrayAccounts = [...found!.XrayAccounts, newXray];
+      return newInbounds;
+    });
+
+    // setSelectedServerInbounds((inbounds) => {
+    //   return inbounds!.map((i) =>
+    //     i.id !== inbound.id
+    //       ? i
+    //       : { ...i, XrayAccounts: [...i.XrayAccounts, newXray] }
+    //   );
+    // });
+
+    toast.success(xray.message);
   };
 
   return (
@@ -241,7 +279,8 @@ const CreateUserModal = ({
                             >
                               {inbound.XrayAccounts.map(
                                 (a) =>
-                                  a.uid === null && (
+                                  (a.uid === null ||
+                                    a.uid === selectedUser.id) && (
                                     <option key={a.id} value={a.id}>
                                       {a.xray_username}
                                     </option>
@@ -250,7 +289,7 @@ const CreateUserModal = ({
                             </Select>
                             <button
                               className="flex justify-center bg-blue-700 h-8 w-8 rounded-full items-center text-center"
-                              onClick={handleAddXrayAccount}
+                              onClick={() => handleAddXrayAccount(inbound)}
                             >
                               +
                             </button>

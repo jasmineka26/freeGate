@@ -2,13 +2,13 @@ import _axios from "axios";
 import Card from "../models/Card";
 import Category from "../models/Category";
 import Config from "../models/Config";
+import Inbound from "../models/Inbound";
 import ReportPayment from "../models/ReportPayment";
+import Server from "../models/Server";
+import Sub from "../models/Sub";
 import User from "../models/User";
 import Packes from "../models/packes";
 import Payment from "../models/payments";
-import Server from "../models/Server";
-import Sub from "../models/Sub";
-import Inbound from "../models/Inbound";
 
 // let token = "";
 
@@ -175,6 +175,7 @@ const addSubscription = async (
   return res.data;
 };
 const addXray = async (
+  inbound: number,
   userId: number
 ): Promise<{
   id: number;
@@ -182,7 +183,7 @@ const addXray = async (
   success: boolean;
   message: string;
 }> => {
-  const res = await axios.post(`/xray/accounts/add/${userId}`);
+  const res = await axios.post(`/xray/accounts/add/${userId}`, { inbound });
   return res.data;
 };
 const addUser = async (request: {
@@ -260,6 +261,32 @@ const UpdateConfig = async (
   return res.data;
 };
 
+const UpdateUser = async (
+  id: number,
+  name: string,
+  os: string,
+  password: string,
+  payment_card_id: number | undefined,
+  referer_id: number | null,
+  role_id: number,
+  server_id: number,
+  username: string,
+  xrayAccounts: unknown[]
+): Promise<User> => {
+  const res = await axios.put(`/users/${id}`, {
+    name,
+    os,
+    password,
+    payment_card_id,
+    referer_id,
+    role_id,
+    server_id,
+    username,
+    xrayAccounts,
+  });
+  return res.data;
+};
+
 const client = Object.freeze({
   login,
   getUsers,
@@ -279,6 +306,7 @@ const client = Object.freeze({
   addConfig,
   addServer,
   addUser,
+  addXray,
   deleteServer,
   addManualPeyment,
   addSubscription,
@@ -286,7 +314,7 @@ const client = Object.freeze({
   UpdateCard,
   UpdateCatecory,
   UpdateConfig,
-  addXray,
+  UpdateUser,
 });
 export default client;
 
