@@ -24,6 +24,7 @@ const UsersPage = () => {
   >(undefined);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenSitu, setIsOpenSitu] = useState(false);
+  const [ascendingOrder, setAscendingOrder] = useState(true);
 
   const handleOnUserClicked = async (user: User) => {
     setSelectedUser(user);
@@ -33,13 +34,26 @@ const UsersPage = () => {
     );
     setSelectedInbounds(inbounds);
   };
+  const handleOnSortedUsersClicked = () => {
+    const orderMultiplier = ascendingOrder ? 1 : -1;
+    const sortedUsers = [...users].sort((a, b) => {
+      return orderMultiplier * a.name.localeCompare(b.name);
+    });
+    setUsers(sortedUsers);
+    setAscendingOrder(!ascendingOrder);
+    console.log(users);
+  };
 
   const headerItems = () => (
     <>
       <th scope="col" className="px-6 py-3">
         ردیف
       </th>
-      <th scope="col" className="px-6 py-3">
+      <th
+        scope="col"
+        className="px-6 py-3"
+        onClick={handleOnSortedUsersClicked}
+      >
         نام
       </th>
       <th scope="col" className="px-6 py-3">

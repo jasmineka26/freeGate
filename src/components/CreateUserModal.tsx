@@ -88,6 +88,9 @@ const CreateUserModal = ({
     const server_id = Number(formData.get("server"));
 
     if (isUpdateDilaog) {
+      const xrayAccountIds = selectedUser.xrayAccounts
+        ? selectedUser.xrayAccounts.map((i) => i.id)
+        : [];
       const changedUser = await client.UpdateUser(
         selectedUser.id,
         name,
@@ -98,7 +101,7 @@ const CreateUserModal = ({
         role_id,
         server_id,
         username,
-        selectedUser.xrayAccounts.map((i) => i.id)
+        xrayAccountIds
       );
       console.log(changedUser);
       onUserUpdated(changedUser);
