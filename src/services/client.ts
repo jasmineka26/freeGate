@@ -52,6 +52,10 @@ const getPayments = async (): Promise<Payment[]> => {
   const res = await axios.get("/payments");
   return res.data;
 };
+const getPaymentsHistory = async (uId: number): Promise<Payment[]> => {
+  const res = await axios.get(`/payments/${uId}`);
+  return res.data;
+};
 const getCategories = async (): Promise<Category[]> => {
   const res = await axios.get("/categories");
   return res.data;
@@ -299,6 +303,7 @@ const client = Object.freeze({
   getCategories,
   getInboundsByServerId,
   getAllSubscriptions,
+  getPaymentsHistory,
   addCategory,
   addCard,
   getAdminUsers,

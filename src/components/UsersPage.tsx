@@ -8,6 +8,8 @@ import CreateUserModal from "./CreateUserModal";
 import Search from "./Search";
 import Table from "./Table";
 import Inbound from "../models/Inbound";
+import PaymentsHistory from "./historyPayments";
+import Payment from "../models/payments";
 
 const UsersPage = () => {
   const {
@@ -19,6 +21,7 @@ const UsersPage = () => {
   const { data: cards } = useFetch(client.getCards, "cards");
   const { data: servers } = useFetch(client.getServers, "servers");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [selectedInbounds, setSelectedInbounds] = useState<
     Inbound[] | undefined
   >(undefined);
@@ -41,7 +44,6 @@ const UsersPage = () => {
     });
     setUsers(sortedUsers);
     setAscendingOrder(!ascendingOrder);
-    console.log(users);
   };
 
   const headerItems = () => (
@@ -87,14 +89,19 @@ const UsersPage = () => {
     setSelectedUser(user);
     setIsOpen(true);
   };
+  const handleOnHistoryClicked = async (user: User | null) => {
+    setIsOpen(true);
+    const paymentsHistory = await client.getPaymentsHistory(Number(user?.id));
+    setPayments(paymentsHistory);
+  };
 
-  const renderItem = (user: User) => (
+  const renderItem = (user: User, index: number = 0) => (
     <>
       <td
         scope="row"
         className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap"
       >
-        {user.id}
+        {index + 1}
       </td>
       <td className="px-6 py-4">{user.name}</td>
       <td
@@ -104,9 +111,18 @@ const UsersPage = () => {
         {user.username}
       </td>
       <td className="px-6 py-4">{user.payment_card?.title}</td>
-      <td className="px-6 py-4">{user.os}</td>
+      <td className="px-6 py-4 text-xl">
+        {user.os === "android" ? "🤖" : "🍎"}
+      </td>
       <td className="px-6 py-4">{user.server_name}</td>
-      <td className="px-6 py-4">نامعلوم</td>
+      <td className="px-6 py-4">
+        <button
+          className="hover:text-blue-700 hover:font-bold"
+          onClick={() => handleOnHistoryClicked(user)}
+        >
+          مشاهده
+        </button>
+      </td>
       <td className="px-6 py-4">
         <button
           style={{ color: user.subscription?.is_active ? "green" : "red" }}
@@ -179,6 +195,11 @@ const UsersPage = () => {
         isOpen={isOpenSitu}
         onClose={handleClose}
         selectedUser={selectedUser}
+      />
+      <PaymentsHistory
+        isOpen={isOpen}
+        onClose={handleClose}
+        selectedPayments={payments}
       />
     </>
   );
