@@ -27,6 +27,7 @@ const UsersPage = () => {
   >(undefined);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenSitu, setIsOpenSitu] = useState(false);
+  const [isOpenHistoryPayments, setIsOpenHistoryPayments] = useState(false);
   const [ascendingOrder, setAscendingOrder] = useState(true);
 
   const handleOnUserClicked = async (user: User) => {
@@ -90,9 +91,9 @@ const UsersPage = () => {
     setIsOpen(true);
   };
   const handleOnHistoryClicked = async (user: User | null) => {
-    setIsOpen(true);
     const paymentsHistory = await client.getPaymentsHistory(Number(user?.id));
     setPayments(paymentsHistory);
+    setIsOpenHistoryPayments(true);
   };
 
   const renderItem = (user: User, index: number = 0) => (
@@ -150,6 +151,7 @@ const UsersPage = () => {
     setIsOpen(false);
     setSelectedUser(null);
     setIsOpenSitu(false);
+    setIsOpenHistoryPayments(false);
   };
 
   return (
@@ -197,7 +199,7 @@ const UsersPage = () => {
         selectedUser={selectedUser}
       />
       <PaymentsHistory
-        isOpen={isOpen}
+        isOpen={isOpenHistoryPayments}
         onClose={handleClose}
         selectedPayments={payments}
       />

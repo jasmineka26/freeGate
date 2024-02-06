@@ -1,14 +1,14 @@
 import {
   Button,
-  FormControl,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalOverlay,
 } from "@chakra-ui/react";
-import Table from "./Table";
+import * as moment from "jalali-moment";
 import Payment from "../models/payments";
+import Table from "./Table";
 
 interface Props {
   isOpen: boolean;
@@ -53,7 +53,9 @@ const PaymentsHistory = ({ isOpen, onClose, selectedPayments }: Props) => {
         {selectedPayments.paid}
       </td>
       <td className="px-6 py-4">{selectedPayments.dest_card.title}</td>
-      <td className="px-6 py-4 text-xl">{selectedPayments.created_at}</td>
+      <td className="px-6 py-4">
+        {moment(selectedPayments.created_at).locale("fa").format("YYYY/M/D")}
+      </td>
       <td className="px-6 py-4">
         {selectedPayments.user.current_subscription.is_active
           ? "عدم تایید"
@@ -68,20 +70,41 @@ const PaymentsHistory = ({ isOpen, onClose, selectedPayments }: Props) => {
       {isOpen && (
         <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px)" />
       )}
-      <ModalContent className="flex flex-col justify-center items-center w-screen h-screen">
+      <ModalContent
+        className="flex flex-col justify-center items-center w-screen h-screen"
+        dir="rtl"
+      >
         <ModalBody
-          pb={6}
-          className={`w-[80%] h-[40%] bg-slate-800 rounded-xl flex flex-col items-center gap-9 overflow-auto pt-5`}
+          className={`w-[60%] h-[40%] rounded-xl flex flex-col items-center overflow-auto p-5`}
         >
-          <Table
-            headerItems={headerItems}
-            identifier={(payments) => payments.id}
-            items={selectedPayments}
-            renderItem={renderItem}
-            loading={false}
-            error=""
-          />
+          {selectedPayments.length > 0 ? (
+            <Table
+              headerItems={headerItems}
+              identifier={(payments) => payments.id}
+              items={selectedPayments}
+              renderItem={renderItem}
+              loading={false}
+              error=""
+            />
+          ) : (
+            <div className=" w-[80%] h-[80%] flex flex-col items-center justify-center">
+              <div
+                className={`w-full h-full rounded-xl flex flex-col items-center justify-center overflow-auto p-5 bg-gray-300 text-gray-700`}
+              >
+                No Payment
+              </div>
+            </div>
+          )}
         </ModalBody>
+        <ModalFooter>
+          <Button
+            onClick={onClose}
+            type="button"
+            className="bg-red-700 hover:bg-red-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
+          >
+            Close
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

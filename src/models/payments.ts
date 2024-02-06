@@ -1,5 +1,5 @@
 export default interface Payment {
-  [x: string]: any;
+  // [x: string]: any;
   id: number;
   uid: number;
   package_id: number;
