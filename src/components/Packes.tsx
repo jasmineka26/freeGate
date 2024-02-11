@@ -1,7 +1,6 @@
-import { useState } from "react";
-import useFetch from "../hooks/useFetch";
+import { useEffect, useState } from "react";
 import Packes from "../models/packes";
-import client from "../services/client";
+import useApi from "../useApi";
 import CreatePackModal from "./CreatePackModal";
 import Search from "./Search";
 import Table from "./Table";
@@ -9,13 +8,20 @@ import Table from "./Table";
 const PackesPages = () => {
   const [selectedPack, setSelectedPack] = useState<Packes | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { data: category } = useFetch(client.getCategories, "categories");
+
   const {
+    request: getCategories,
+    loading: categoreisLoading,
+    error: categoreisError,
+    data: categoreis,
+  } = useApi("getCategories");
+  const {
+    request: getPackes,
+    loading: packesLoading,
+    error: packsError,
     data: packes,
     setData: setPack,
-    error,
-    loading,
-  } = useFetch(client.getPackes, "packages");
+  } = useApi("getPackes");
 
   const headerItems = () => (
     <>
@@ -73,6 +79,11 @@ const PackesPages = () => {
     setSelectedPack(null);
   };
 
+  useEffect(() => {
+    getCategories();
+    getPackes();
+  }, [getCategories, getPackes]);
+
   return (
     <>
       <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
@@ -82,27 +93,29 @@ const PackesPages = () => {
           identifier={(pack) => pack.id}
           headerItems={headerItems}
           renderItem={renderItem}
-          loading={loading}
-          error={error}
+          loading={packesLoading || categoreisLoading}
+          error={packsError || categoreisError}
         />
       </div>
-      <CreatePackModal
-        categoreis={category}
-        isOpen={isOpen}
-        onClose={handleClose}
-        onPackAdded={(newPack) => {
-          if (selectedPack) {
-            setPack((prevPackes) =>
-              prevPackes.map((pack) =>
-                pack.id === selectedPack.id ? newPack : pack
-              )
-            );
-          } else {
-            setPack((prevPackes) => [...prevPackes, newPack]);
-          }
-        }}
-        selectedPack={selectedPack}
-      />
+      {categoreis && packes && (
+        <CreatePackModal
+          categoreis={categoreis}
+          isOpen={isOpen}
+          onClose={handleClose}
+          onPackAdded={(newPack) => {
+            if (selectedPack) {
+              setPack((prevPackes) =>
+                prevPackes!.map((pack) =>
+                  pack.id === selectedPack.id ? newPack : pack
+                )
+              );
+            } else {
+              setPack((prevPackes) => [...prevPackes!, newPack]);
+            }
+          }}
+          selectedPack={selectedPack}
+        />
+      )}
     </>
   );
 };

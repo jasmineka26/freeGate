@@ -30,7 +30,7 @@ const ReportPaymentTable: React.FC<IProps> = ({ reports }) => {
             <tbody className="text-center">
               {owners.map(({ cards, ownerId, ownerName, total }) => {
                 return cards.map((c, i) => (
-                  <tr>
+                  <tr key={c.id}>
                     {i === 0 && (
                       <>
                         <td

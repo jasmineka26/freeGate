@@ -1,22 +1,24 @@
 import moment from "jalali-moment";
-import React from "react";
+import React, { useEffect } from "react";
 import Chart from "react-apexcharts";
-import useFetch from "../hooks/useFetch";
-import client from "../services/client";
+import useApi from "../useApi";
 import findMonthlyPayments from "./FindSumOfPaymentMonthly";
 
 const PaymentChart: React.FC = () => {
   const {
+    request: getPayments,
+    loading: paymentsLoading,
+    error: paymentsError,
     data: payments,
-    error,
-    loading,
-  } = useFetch(client.getPayments, "payments");
+  } = useApi("getPayments");
 
-  const price = payments.map((p) => p.paid);
+  const prices = payments ? payments.map((p) => p.paid) : [];
 
-  const convertedDates = payments?.map((p) =>
-    moment(p.created_at, "YYYY-MM-DD").locale("fa").format("YYYY-MM-DD")
-  );
+  const convertedDates = payments
+    ? payments.map((p) =>
+        moment(p.created_at, "YYYY-MM-DD").locale("fa").format("YYYY-MM-DD")
+      )
+    : [];
 
   const chartOptions: ApexCharts.ApexOptions = {
     chart: {
@@ -70,7 +72,7 @@ const PaymentChart: React.FC = () => {
     ],
     xaxis: {
       categories:
-        findMonthlyPayments(convertedDates, price).map((d) => d.month) || [],
+        findMonthlyPayments(convertedDates, prices).map((d) => d.month) || [],
       labels: {
         show: true,
       },
@@ -86,6 +88,10 @@ const PaymentChart: React.FC = () => {
     },
   };
 
+  useEffect(() => {
+    getPayments();
+  }, [getPayments]);
+
   return (
     <div>
       <Chart
@@ -93,7 +99,7 @@ const PaymentChart: React.FC = () => {
         series={[
           {
             name: "  گزارش پرداخت ها  ",
-            data: findMonthlyPayments(convertedDates, price).map(
+            data: findMonthlyPayments(convertedDates, prices).map(
               (d) => d.totalPaid
             ),
           },
@@ -102,7 +108,11 @@ const PaymentChart: React.FC = () => {
         height={350}
         width={500}
       />
-      {loading ? <p>Loading...</p> : error ? <p>Error: {error}</p> : null}
+      {paymentsLoading ? (
+        <p>paymentsLoading...</p>
+      ) : paymentsError ? (
+        <p>Error: {paymentsError}</p>
+      ) : null}
     </div>
   );
 };
