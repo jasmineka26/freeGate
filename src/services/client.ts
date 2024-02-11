@@ -9,6 +9,7 @@ import Sub from "../models/Sub";
 import User from "../models/User";
 import Packes from "../models/packes";
 import Payment from "../models/payments";
+import { delay } from "../useApi";
 
 // let token = "";
 
@@ -45,7 +46,7 @@ const getPackes = async (): Promise<Packes[]> => {
   return res.data;
 };
 const getServers = async (): Promise<Server[]> => {
-  const res = await axios.get("/servers");
+  const res = await axios.get("/serverss");
   return res.data;
 };
 const getPayments = async (): Promise<Payment[]> => {
@@ -57,7 +58,8 @@ const getPaymentsHistory = async (uId: number): Promise<Payment[]> => {
   return res.data;
 };
 const getCategories = async (): Promise<Category[]> => {
-  const res = await axios.get("/categories");
+  await delay(1000);
+  const res = await axios.get("/categoriess");
   return res.data;
 };
 const getAdminUsers = async (): Promise<User[]> => {

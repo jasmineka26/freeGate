@@ -11,7 +11,6 @@ const PaymentReportPage = () => {
   const handleDatePick = async (start: Date, end: Date) => {
     const report = await client.getReportPayments(start, end);
     setReport(report);
-    console.log(report);
   };
 
   return (

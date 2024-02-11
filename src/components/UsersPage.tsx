@@ -1,25 +1,17 @@
-import { useCallback, useState } from "react";
-import useFetch from "../hooks/useFetch";
+import { useCallback, useEffect, useState } from "react";
 import useSearch from "../hooks/useSearch";
+import Inbound from "../models/Inbound";
 import User from "../models/User";
+import Payment from "../models/payments";
 import client from "../services/client";
+import useApi from "../useApi";
 import CreateSubscription from "./CreateSubscription";
 import CreateUserModal from "./CreateUserModal";
 import Search from "./Search";
 import Table from "./Table";
-import Inbound from "../models/Inbound";
 import PaymentsHistory from "./historyPayments";
-import Payment from "../models/payments";
 
 const UsersPage = () => {
-  const {
-    data: users,
-    setData: setUsers,
-    error,
-    loading,
-  } = useFetch(client.getUsers, "users");
-  const { data: cards } = useFetch(client.getCards, "cards");
-  const { data: servers } = useFetch(client.getServers, "servers");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [selectedInbounds, setSelectedInbounds] = useState<
@@ -30,6 +22,26 @@ const UsersPage = () => {
   const [isOpenHistoryPayments, setIsOpenHistoryPayments] = useState(false);
   const [ascendingOrder, setAscendingOrder] = useState(true);
 
+  const {
+    request: getUsers,
+    loading: userLoadin,
+    error: userError,
+    data: users,
+    setData: setUsers,
+  } = useApi("getUsers");
+  const {
+    request: getCards,
+    loading: cardsLoading,
+    error: cardsError,
+    data: cards,
+  } = useApi("getCards");
+  const {
+    request: getServers,
+    loading: serversLoading,
+    error: serversError,
+    data: servers,
+  } = useApi("getServers");
+
   const handleOnUserClicked = async (user: User) => {
     setSelectedUser(user);
     setIsOpen(true);
@@ -38,9 +50,10 @@ const UsersPage = () => {
     );
     setSelectedInbounds(inbounds);
   };
+
   const handleOnSortedUsersClicked = () => {
     const orderMultiplier = ascendingOrder ? 1 : -1;
-    const sortedUsers = [...users].sort((a, b) => {
+    const sortedUsers = [...users!].sort((a, b) => {
       return orderMultiplier * a.name.localeCompare(b.name);
     });
     setUsers(sortedUsers);
@@ -90,6 +103,10 @@ const UsersPage = () => {
     setSelectedUser(user);
     setIsOpen(true);
   };
+  const handleUserSituetionDialogOpen = (user: User | null) => {
+    setSelectedUser(user);
+    setIsOpenSitu(true);
+  };
   const handleOnHistoryClicked = async (user: User | null) => {
     const paymentsHistory = await client.getPaymentsHistory(Number(user?.id));
     setPayments(paymentsHistory);
@@ -127,7 +144,7 @@ const UsersPage = () => {
       <td className="px-6 py-4">
         <button
           style={{ color: user.subscription?.is_active ? "green" : "red" }}
-          onClick={() => handleUserDialogOpen(user)}
+          onClick={() => handleUserSituetionDialogOpen(user)}
         >
           {user.subscription?.is_active ? "فعــال" : "ایجــاد"}
         </button>
@@ -154,6 +171,12 @@ const UsersPage = () => {
     setIsOpenHistoryPayments(false);
   };
 
+  useEffect(() => {
+    getUsers();
+    getCards();
+    getServers();
+  }, [getUsers, getCards, getServers]);
+
   return (
     <>
       <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
@@ -162,37 +185,41 @@ const UsersPage = () => {
           onSearchChange={setSearchTerm}
           onAddClick={() => handleUserDialogOpen(null)}
         />
+        {}
         <Table
           items={filteredUsers}
           identifier={(user) => user.id}
           headerItems={headerItems}
           renderItem={renderItem}
-          loading={loading}
-          error={error}
+          loading={userLoadin || cardsLoading || serversLoading}
+          error={userError || cardsError || serversError}
+          onTryAgain={getUsers}
         />
       </div>
 
-      <CreateUserModal
-        selectedUser={selectedUser}
-        selectedInbounds={selectedInbounds}
-        users={users}
-        servers={servers}
-        isOpen={isOpen}
-        onClose={handleClose}
-        cards={cards}
-        onUserAdded={(newUser) => {
-          setUsers((prevUsers) => [...prevUsers, newUser]);
-          setSelectedUser(newUser);
-        }}
-        onUserUpdated={(updatedUser) => {
-          setUsers((prevUsers) =>
-            prevUsers.map((user) =>
-              user.id === updatedUser.id ? updatedUser : user
-            )
-          );
-        }}
-      />
-
+      {users && cards && servers && (
+        <CreateUserModal
+          selectedUser={selectedUser}
+          selectedInbounds={selectedInbounds}
+          users={users}
+          servers={servers}
+          isOpen={isOpen}
+          onClose={handleClose}
+          cards={cards}
+          onUserAdded={(newUser) => {
+            setUsers((prevUsers) => [...prevUsers!, newUser]);
+            setSelectedUser(newUser);
+          }}
+          onUserUpdated={(updatedUser) => {
+            setUsers((prevUsers) =>
+              prevUsers!.map((user) =>
+                user.id === updatedUser.id ? updatedUser : user
+              )
+            );
+          }}
+        />
+      )}
+      {/* TODO:complet this feat */}
       <CreateSubscription
         isOpen={isOpenSitu}
         onClose={handleClose}

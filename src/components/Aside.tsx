@@ -43,7 +43,7 @@ const Aside = () => {
     <div className="flex justify-center items-center p-5 h-full">
       <aside
         className={`bg-gradient-to-br from-gray-800 to-gray-900 overflow-auto
-     w-72 h-full rounded-xl `}
+     w-72 h-full rounded-xl dark:bg-white`}
       >
         <div className="relative border-b border-white/20">
           <Header />

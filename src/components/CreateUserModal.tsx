@@ -63,7 +63,7 @@ const CreateUserModal = ({
     if (isUpdateDilaog && selectedInbounds) {
       setSelectedServerInbounds(selectedInbounds);
     }
-  }, [selectedInbounds]);
+  }, [isUpdateDilaog, selectedInbounds]);
 
   const handleChangeServer = async (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -103,7 +103,6 @@ const CreateUserModal = ({
         username,
         xrayAccountIds
       );
-      console.log(changedUser);
       onUserUpdated(changedUser);
       toast.success(`User ${changedUser.name} Updated`);
       // onClose();

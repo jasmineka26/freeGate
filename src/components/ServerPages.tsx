@@ -1,27 +1,30 @@
 import { TrashIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
 import Server from "../models/Server";
 import client from "../services/client";
 import CreateServerModal from "./CreatServerModal";
 import Search from "./Search";
 import Table from "./Table";
+import useApi from "../useApi";
 
 const ServerPages = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedServer, setSelectedServer] = useState<Server | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState({
     isOpen: false,
     serverId: 0,
   });
+
   const {
+    request: getServers,
+    loading: serversLoading,
+    error: serversError,
     data: servers,
     setData: setServer,
-    error,
-    loading,
-  } = useFetch(client.getServers, "servers");
-  const { data: categoreis } = useFetch(client.getCategories, "categoreis");
+  } = useApi("getServers");
 
-  const [selectedServer, setSelectedServer] = useState<Server | null>(null);
+  const { data: categoreis } = useFetch(client.getCategories, "categoreis");
 
   const handleDelete = (serverId: number) => {
     setDeleteConfirmation({
@@ -34,7 +37,9 @@ const ServerPages = () => {
     const { serverId } = deleteConfirmation;
     try {
       await client.deleteServer(serverId);
-      const updatedServers = servers.filter((server) => server.id !== serverId);
+      const updatedServers = servers!.filter(
+        (server) => server.id !== serverId
+      );
       setServer(updatedServers);
     } catch (error) {
       console.error("Error deleting server:", error);
@@ -152,6 +157,10 @@ const ServerPages = () => {
     setSelectedServer(null);
   };
 
+  useEffect(() => {
+    getServers();
+  }, [getServers]);
+
   return (
     <>
       <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
@@ -161,19 +170,22 @@ const ServerPages = () => {
           identifier={(server) => server.id}
           headerItems={headerItems}
           renderItem={renderItem}
-          loading={loading}
-          error={error}
+          loading={serversLoading}
+          error={serversError}
+          onTryAgain={getServers}
         />
       </div>
-      <CreateServerModal
-        isOpen={isOpen}
-        onClose={handleClose}
-        onServerAdded={(server) => {
-          setServer([...servers, server]);
-        }}
-        categoreis={categoreis}
-        selectedServer={selectedServer}
-      />
+      {servers && (
+        <CreateServerModal
+          isOpen={isOpen}
+          onClose={handleClose}
+          onServerAdded={(server) => {
+            setServer([...servers, server]);
+          }}
+          categoreis={categoreis}
+          selectedServer={selectedServer}
+        />
+      )}
       {deleteConfirmation.isOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
           <div className="bg-white p-5 rounded-md">

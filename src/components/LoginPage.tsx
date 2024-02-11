@@ -23,7 +23,6 @@ const Login = () => {
         navigate("/dashboard", { replace: true });
       })
       .catch((err) => {
-        console.log(err.response);
         toast.error(err.response.data.message);
         setPassword("");
         setUsername("");

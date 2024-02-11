@@ -1,12 +1,13 @@
 import React from "react";
 
 interface IProps<T> {
-  items: T[];
+  items: T[] | undefined;
   renderItem: (item: T, index: number) => React.ReactNode;
   headerItems: () => React.ReactNode;
   identifier: (item: T) => string | number;
   loading: boolean;
   error: string | undefined;
+  onTryAgain?: () => void;
 }
 
 const Table = <T,>({
@@ -16,13 +17,26 @@ const Table = <T,>({
   identifier,
   loading,
   error,
+  onTryAgain,
 }: IProps<T>) => {
   if (loading) {
     return <p>Loading...</p>;
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <div className="flex items-center gap-5">
+        {error}
+        {onTryAgain && (
+          <button
+            onClick={onTryAgain}
+            className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
+          >
+            try
+          </button>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -36,7 +50,7 @@ const Table = <T,>({
               </tr>
             </thead>
             <tbody className="text-center tex">
-              {items.map((item, index) => (
+              {items?.map((item, index) => (
                 <tr
                   key={identifier(item)}
                   className={`${
