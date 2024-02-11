@@ -1,36 +1,46 @@
 import moment from "jalali-moment";
-import useFetch from "../hooks/useFetch";
+import { useCallback, useEffect, useState } from "react";
+import useSearch from "../hooks/useSearch";
 import Payment from "../models/payments";
-import client from "../services/client";
+import useApi from "../useApi";
+import CreateManualPayment from "./CreateManualPayment";
 import Search from "./Search";
 import Table from "./Table";
-import { useCallback, useState } from "react";
-import useSearch from "../hooks/useSearch";
-import CreateManualPayment from "./CreateManualPayment";
 
 const PaymentsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
+
   const {
+    request: getPayments,
+    loading: paymentsLoading,
+    error: paymentsError,
     data: payments,
     setData: setPayments,
-    error,
-    loading: loadingPayments,
-  } = useFetch(client.getPayments, "payments");
-  const { data: cards, loading: loadingCards } = useFetch(
-    client.getCards,
-    "cards"
-  );
-  const { data: users, loading: loadingUsers } = useFetch(
-    client.getUsers,
-    "users"
-  );
-  const { data: packes, loading: loadingPackes } = useFetch(
-    client.getPackes,
-    "packes"
-  );
+  } = useApi("getPayments");
 
+  const {
+    request: getUsers,
+    loading: userLoadin,
+    error: userError,
+    data: users,
+  } = useApi("getUsers");
+
+  const {
+    request: getCards,
+    loading: cardsLoading,
+    error: cardsError,
+    data: cards,
+  } = useApi("getCards");
+
+  const {
+    request: getPackes,
+    loading: packesLoading,
+    error: packsError,
+    data: packes,
+  } = useApi("getPackes");
   const loading =
-    loadingPayments || loadingCards || loadingUsers || loadingPackes;
+    paymentsLoading || cardsLoading || userLoadin || packesLoading;
+  const error = paymentsError || userError || cardsError || packsError;
 
   const headerItems = () => (
     <>
@@ -117,6 +127,13 @@ const PaymentsPage = () => {
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    getPayments();
+    getCards();
+    getUsers();
+    getPackes();
+  }, [getPayments, getCards, getUsers, getPackes]);
+
   return (
     <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
       <Search
@@ -132,16 +149,18 @@ const PaymentsPage = () => {
         loading={loading}
         error={error}
       />
-      <CreateManualPayment
-        isOpen={isOpen}
-        onClose={handleClose}
-        onPaymentAdded={(payment) => {
-          setPayments([...payments, payment]);
-        }}
-        cards={cards}
-        users={users}
-        packes={packes}
-      />
+      {payments && cards && users && packes && (
+        <CreateManualPayment
+          isOpen={isOpen}
+          onClose={handleClose}
+          onPaymentAdded={(payment) => {
+            setPayments([...payments, payment]);
+          }}
+          cards={cards}
+          users={users}
+          packes={packes}
+        />
+      )}
     </div>
   );
 };

@@ -1,12 +1,11 @@
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
-import useFetch from "../hooks/useFetch";
 import Server from "../models/Server";
 import client from "../services/client";
+import useApi from "../useApi";
 import CreateServerModal from "./CreatServerModal";
 import Search from "./Search";
 import Table from "./Table";
-import useApi from "../useApi";
 
 const ServerPages = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +23,12 @@ const ServerPages = () => {
     setData: setServer,
   } = useApi("getServers");
 
-  const { data: categoreis } = useFetch(client.getCategories, "categoreis");
+  const {
+    request: getCategories,
+    loading: categoreisLoading,
+    error: categoreisError,
+    data: categoreis,
+  } = useApi("getCategories");
 
   const handleDelete = (serverId: number) => {
     setDeleteConfirmation({
@@ -159,7 +163,8 @@ const ServerPages = () => {
 
   useEffect(() => {
     getServers();
-  }, [getServers]);
+    getCategories();
+  }, [getServers, getCategories]);
 
   return (
     <>
@@ -170,12 +175,12 @@ const ServerPages = () => {
           identifier={(server) => server.id}
           headerItems={headerItems}
           renderItem={renderItem}
-          loading={serversLoading}
-          error={serversError}
+          loading={serversLoading || categoreisLoading}
+          error={serversError || categoreisError}
           onTryAgain={getServers}
         />
       </div>
-      {servers && (
+      {servers && categoreis && (
         <CreateServerModal
           isOpen={isOpen}
           onClose={handleClose}
