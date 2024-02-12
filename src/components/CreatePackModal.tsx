@@ -9,10 +9,12 @@ import {
   ModalFooter,
   ModalOverlay,
   Select,
+  Spinner,
 } from "@chakra-ui/react";
-import Packes from "../models/packes";
+import { toast } from "react-toastify";
 import Category from "../models/Category";
-import client from "../services/client";
+import Packes from "../models/packes";
+import useApi from "../useApi";
 
 interface Props {
   isOpen: boolean;
@@ -28,6 +30,17 @@ const CreatePackModal = ({
   categoreis,
   selectedPack,
 }: Props) => {
+  const {
+    request: UpdatePack,
+    loading: updatePackLoading,
+    error: updatePackError,
+  } = useApi("UpdatePack");
+  const {
+    request: addPackage,
+    loading: addPackLoading,
+    error: addPackError,
+  } = useApi("addPackage");
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -43,7 +56,8 @@ const CreatePackModal = ({
     try {
       if (selectedPack) {
         const id = selectedPack.id;
-        pack = await client.UpdatePack(
+
+        pack = await UpdatePack(
           duration,
           price,
           server_category_id,
@@ -52,7 +66,7 @@ const CreatePackModal = ({
           id
         );
       } else {
-        pack = await client.addPackage(
+        pack = await addPackage(
           title,
           duration,
           traffic,
@@ -61,9 +75,16 @@ const CreatePackModal = ({
         );
       }
 
-      onPackAdded(pack);
+      if (pack.succeed) {
+        const newPack = pack.data;
+        onPackAdded(newPack);
+        toast.success("New Package is added");
+        onClose();
+      } else {
+        toast.error(addPackError);
+      }
     } catch (error) {
-      console.error("Error updating/adding package:", error);
+      toast.error(addPackError || updatePackError);
     }
 
     onClose();
@@ -141,16 +162,23 @@ const CreatePackModal = ({
               <Button
                 className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
                 type="submit"
+                disabled={updatePackLoading || addPackLoading}
               >
-                Save
+                {updatePackLoading || addPackLoading ? (
+                  <Spinner width={"15px"} height={"15px"} />
+                ) : (
+                  "Save"
+                )}
               </Button>
-              <Button
-                onClick={onClose}
-                type="button"
-                className="bg-red-700 hover:bg-red-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
-              >
-                Cancel
-              </Button>
+              {!(updatePackLoading || addPackLoading) && (
+                <Button
+                  onClick={onClose}
+                  type="button"
+                  className="bg-red-700 hover:bg-red-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
+                >
+                  Cancel
+                </Button>
+              )}
             </ModalFooter>
           </form>
         </ModalBody>

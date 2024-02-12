@@ -76,7 +76,7 @@ const CreateServerModal = ({
           pb={6}
           className="w-[30%] h-[70%] bg-slate-800 rounded-xl flex flex-col justify-center items-center gap-9"
         >
-          {addServerLoading && <Spinner />}
+          {addServerLoading && <Spinner width={"15px"} height={"15px"} />}
           <form
             className="flex flex-col w-full gap-5 text-white justify-center items-center "
             onSubmit={handleSubmit}

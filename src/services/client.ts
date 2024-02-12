@@ -222,6 +222,7 @@ const UpdatePack = async (
   traffic: number,
   id: number
 ): Promise<Packes> => {
+  await delay(10000);
   const res = await axios.put(`/packages/${id}`, {
     duration,
     price,

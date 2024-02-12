@@ -302,7 +302,7 @@ const CreateUserModal = ({
                 {selectedServer && isUpdateDilaog && (
                   <div className="w-full flex flex-col gap-4 justify-center items-center ">
                     {getInboundsByServerIdLoading ? (
-                      <Spinner />
+                      <Spinner width={"15px"} height={"15px"} />
                     ) : (
                       selectedServerInbounds?.map((inbound) => (
                         <div
@@ -349,7 +349,11 @@ const CreateUserModal = ({
                 className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
                 type="submit"
               >
-                {updateUserLoading || addUserLoading ? <Spinner /> : "save"}
+                {updateUserLoading || addUserLoading ? (
+                  <Spinner width={"15px"} height={"15px"} />
+                ) : (
+                  "save"
+                )}
               </Button>
               <Button
                 onClick={onClose}
