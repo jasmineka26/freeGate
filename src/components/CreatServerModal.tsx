@@ -9,10 +9,12 @@ import {
   ModalFooter,
   ModalOverlay,
   Select,
+  Spinner,
 } from "@chakra-ui/react";
+import { toast } from "react-toastify";
 import Category from "../models/Category";
 import Server from "../models/Server";
-import client from "../services/client";
+import useApi from "../useApi";
 
 interface Props {
   isOpen: boolean;
@@ -28,6 +30,13 @@ const CreateServerModal = ({
   categoreis,
   selectedServer,
 }: Props) => {
+  const {
+    request: addServer,
+    loading: addServerLoading,
+    error: addServerError,
+    data: server,
+  } = useApi("addServer");
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -39,7 +48,11 @@ const CreateServerModal = ({
     const xui_pass = formData.get("xui_pass")!.toString();
     const server_category_id = Number(formData.get("category"));
 
-    const server = await client.addServer(
+    {
+      addServerLoading && <Spinner />;
+    }
+
+    const newServer = await addServer(
       title,
       address,
       xui_port,
@@ -48,8 +61,14 @@ const CreateServerModal = ({
       server_category_id
     );
 
-    onServerAdded(server);
-    onClose();
+    if (newServer.succeed && newServer.data) {
+      const result = newServer.data;
+      onServerAdded(result);
+      toast.success("Server Created");
+      onClose();
+    } else if (!newServer.succeed) {
+      toast.error(addServerError);
+    }
   };
 
   return (
