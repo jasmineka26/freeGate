@@ -34,7 +34,6 @@ const CreateServerModal = ({
     request: addServer,
     loading: addServerLoading,
     error: addServerError,
-    data: server,
   } = useApi("addServer");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -48,11 +47,7 @@ const CreateServerModal = ({
     const xui_pass = formData.get("xui_pass")!.toString();
     const server_category_id = Number(formData.get("category"));
 
-    {
-      addServerLoading && <Spinner />;
-    }
-
-    const newServer = await addServer(
+    const newServerResult = await addServer(
       title,
       address,
       xui_port,
@@ -61,12 +56,12 @@ const CreateServerModal = ({
       server_category_id
     );
 
-    if (newServer.succeed && newServer.data) {
-      const result = newServer.data;
-      onServerAdded(result);
+    if (newServerResult.succeed) {
+      const newServer = newServerResult.data;
+      onServerAdded(newServer);
       toast.success("Server Created");
       onClose();
-    } else if (!newServer.succeed) {
+    } else {
       toast.error(addServerError);
     }
   };
@@ -81,6 +76,7 @@ const CreateServerModal = ({
           pb={6}
           className="w-[30%] h-[70%] bg-slate-800 rounded-xl flex flex-col justify-center items-center gap-9"
         >
+          {addServerLoading && <Spinner />}
           <form
             className="flex flex-col w-full gap-5 text-white justify-center items-center "
             onSubmit={handleSubmit}

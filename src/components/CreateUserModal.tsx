@@ -9,6 +9,7 @@ import {
   ModalFooter,
   ModalOverlay,
   Select,
+  Spinner,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
@@ -17,6 +18,7 @@ import Inbound, { XrayAccount } from "../models/Inbound";
 import Server from "../models/Server";
 import User, { Role } from "../models/User";
 import client from "../services/client";
+import useApi from "../useApi";
 
 interface Props {
   isOpen: boolean;
@@ -40,12 +42,26 @@ const CreateUserModal = ({
   users,
   servers,
 }: Props) => {
-  const isUpdateDilaog = !!selectedUser;
+  const {
+    request: addUser,
+    loading: addUserLoading,
+    error: addUserError,
+  } = useApi("addUser");
+  const {
+    request: UpdateUser,
+    loading: updateUserLoading,
+    error: updateUserError,
+  } = useApi("UpdateUser");
+  const {
+    request: getInboundsByServerId,
+    loading: getInboundsByServerIdLoading,
+    error: getInboundsByServerIdError,
+  } = useApi("getInboundsByServerId");
 
+  const isUpdateDilaog = !!selectedUser;
   const [selectedServerId, setSelectedServerId] = useState<number | undefined>(
     selectedUser?.server_id
   );
-
   const [selectedServerInbounds, setSelectedServerInbounds] = useState<
     Inbound[] | undefined
   >(selectedInbounds);
@@ -55,24 +71,21 @@ const CreateUserModal = ({
     [selectedServerId, servers]
   );
 
-  useEffect(() => {
-    setSelectedServerId(selectedUser?.server_id);
-  }, [selectedUser?.server_id]);
-
-  useEffect(() => {
-    if (isUpdateDilaog && selectedInbounds) {
-      setSelectedServerInbounds(selectedInbounds);
-    }
-  }, [isUpdateDilaog, selectedInbounds]);
-
   const handleChangeServer = async (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const serverId = Number(e.currentTarget.value);
     setSelectedServerId(serverId);
     setSelectedServerInbounds(undefined);
-    const inbounds = await client.getInboundsByServerId(serverId);
-    setSelectedServerInbounds(inbounds);
+    const inbounds = await getInboundsByServerId(serverId);
+    if (inbounds.succeed) {
+      const newInbounds = inbounds.data;
+      setSelectedServerInbounds(newInbounds);
+      toast.success("inbound Loaded");
+      onClose();
+    } else {
+      toast.error(getInboundsByServerIdError);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -91,7 +104,7 @@ const CreateUserModal = ({
       const xrayAccountIds = selectedUser.xrayAccounts
         ? selectedUser.xrayAccounts.map((i) => i.id)
         : [];
-      const changedUser = await client.UpdateUser(
+      const changedUser = await UpdateUser(
         selectedUser.id,
         name,
         os,
@@ -103,11 +116,17 @@ const CreateUserModal = ({
         username,
         xrayAccountIds
       );
-      onUserUpdated(changedUser);
-      toast.success(`User ${changedUser.name} Updated`);
-      // onClose();
+
+      if (changedUser.succeed) {
+        const newChangedUser = changedUser.data;
+        onUserUpdated(newChangedUser);
+        toast.success(`User ${newChangedUser.name} Updated`);
+        onClose();
+      } else {
+        toast.error(updateUserError);
+      }
     } else {
-      const newUser = await client.addUser({
+      const newUser = await addUser({
         name,
         username,
         password,
@@ -119,7 +138,14 @@ const CreateUserModal = ({
         xrayAccounts: [],
         current_subscription_id: null,
       });
-      onUserAdded(newUser);
+      if (newUser.succeed) {
+        const result = newUser.data;
+        onUserAdded(result);
+        toast.success("User Created");
+        onClose();
+      } else {
+        toast.error(addUserError);
+      }
     }
   };
 
@@ -149,6 +175,16 @@ const CreateUserModal = ({
 
     toast.success(xray.message);
   };
+
+  useEffect(() => {
+    setSelectedServerId(selectedUser?.server_id);
+  }, [selectedUser?.server_id]);
+
+  useEffect(() => {
+    if (isUpdateDilaog && selectedInbounds) {
+      setSelectedServerInbounds(selectedInbounds);
+    }
+  }, [isUpdateDilaog, selectedInbounds]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -265,40 +301,44 @@ const CreateUserModal = ({
                 </Select>
                 {selectedServer && isUpdateDilaog && (
                   <div className="w-full flex flex-col gap-4 justify-center items-center ">
-                    {selectedServerInbounds?.map((inbound) => (
-                      <div
-                        className="flex flex-row gap-3 w-full items-center justify-center"
-                        key={inbound.id}
-                      >
-                        <div className="w-full flex-col justify-center">
-                          <span className="pr-3">{inbound.title}</span>
-                          <div className="flex flex-row items-center gap-3">
-                            <Select
-                              icon={<></>}
-                              dir="rtl"
-                              placeholder="انتــخــاب نشــده"
-                              className="w-full h-12 rounded-lg px-3 bg-slate-900 py-2 shadow-lg"
-                            >
-                              {inbound.XrayAccounts.map(
-                                (a) =>
-                                  (a.uid === null ||
-                                    a.uid === selectedUser.id) && (
-                                    <option key={a.id} value={a.id}>
-                                      {a.xray_username}
-                                    </option>
-                                  )
-                              )}
-                            </Select>
-                            <button
-                              className="flex justify-center bg-blue-700 h-8 w-8 rounded-full items-center text-center"
-                              onClick={() => handleAddXrayAccount(inbound)}
-                            >
-                              +
-                            </button>
+                    {getInboundsByServerIdLoading ? (
+                      <Spinner />
+                    ) : (
+                      selectedServerInbounds?.map((inbound) => (
+                        <div
+                          className="flex flex-row gap-3 w-full items-center justify-center"
+                          key={inbound.id}
+                        >
+                          <div className="w-full flex-col justify-center">
+                            <span className="pr-3">{inbound.title}</span>
+                            <div className="flex flex-row items-center gap-3">
+                              <Select
+                                icon={<></>}
+                                dir="rtl"
+                                placeholder="انتــخــاب نشــده"
+                                className="w-full h-12 rounded-lg px-3 bg-slate-900 py-2 shadow-lg"
+                              >
+                                {inbound.XrayAccounts.map(
+                                  (a) =>
+                                    (a.uid === null ||
+                                      a.uid === selectedUser.id) && (
+                                      <option key={a.id} value={a.id}>
+                                        {a.xray_username}
+                                      </option>
+                                    )
+                                )}
+                              </Select>
+                              <button
+                                className="flex justify-center bg-blue-700 h-8 w-8 rounded-full items-center text-center"
+                                onClick={() => handleAddXrayAccount(inbound)}
+                              >
+                                +
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
                 )}
               </div>
@@ -309,7 +349,7 @@ const CreateUserModal = ({
                 className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
                 type="submit"
               >
-                Save
+                {updateUserLoading || addUserLoading ? <Spinner /> : "save"}
               </Button>
               <Button
                 onClick={onClose}

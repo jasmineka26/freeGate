@@ -7,11 +7,17 @@ type ClientMethod = typeof client;
 type ApiMethod = keyof ClientMethod;
 type IData<K extends ApiMethod> = Awaited<ReturnType<ClientMethod[K]>>;
 
-interface ApiResult<T> {
-  succeed: boolean;
-  data: T | undefined;
-  error: string | undefined;
-}
+type ApiResult<T> =
+  | {
+      succeed: true;
+      data: T;
+      error: undefined;
+    }
+  | {
+      succeed: false;
+      data: undefined;
+      error: string;
+    };
 
 const useApi = <K extends ApiMethod>(method: K) => {
   const [data, setData] = useState<IData<K> | undefined>(undefined);
@@ -39,7 +45,7 @@ const useApi = <K extends ApiMethod>(method: K) => {
         return {
           succeed: false,
           data: undefined,
-          error: message ?? error.message,
+          error: error.message,
         };
       }
     },
