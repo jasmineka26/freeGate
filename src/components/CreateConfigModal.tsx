@@ -9,10 +9,12 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
+  Spinner,
 } from "@chakra-ui/react";
-import Config from "../models/Config";
-import client from "../services/client";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
+import Config from "../models/Config";
+import useApi from "../useApi";
 
 interface Props {
   isOpen: boolean;
@@ -29,15 +31,22 @@ const CreateConfigModal = ({
   const [settings, setSettings] = useState<string[]>([]);
   const [newSetting, setNewSetting] = useState<string>("");
 
+  const {
+    request: UpdateConfig,
+    loading: updateConfigLoading,
+    error: updateConfigError,
+  } = useApi("UpdateConfig");
+
+  const {
+    request: addConfig,
+    loading: addConfigLoading,
+    error: addConfigError,
+  } = useApi("addConfig");
+
   const settingsObj: object | undefined = useMemo(
     () => (selectedConfig ? JSON.parse(selectedConfig.settings) : undefined),
     [selectedConfig]
   );
-
-  useEffect(() => {
-    const keys = settingsObj ? Object.keys(settingsObj) : [];
-    setSettings(keys);
-  }, [settingsObj]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,7 +67,7 @@ const CreateConfigModal = ({
     let config;
     if (selectedConfig) {
       const id = selectedConfig.id;
-      config = await client.UpdateConfig(
+      config = await UpdateConfig(
         title,
         user_title,
         settingsMap,
@@ -66,18 +75,27 @@ const CreateConfigModal = ({
         sni,
         id
       );
-    } else {
-      config = await client.addConfig(
-        title,
-        user_title,
-        address,
-        sni,
-        settingsMap
-      );
-    }
 
-    onPackAdded(config);
-    onClose();
+      if (config.succeed) {
+        const newConfig = config.data;
+        onPackAdded(newConfig);
+        toast.success("Config Updated");
+        onClose();
+      } else {
+        toast.error(updateConfigError);
+      }
+    } else {
+      config = await addConfig(title, user_title, address, sni, settingsMap);
+
+      if (config.succeed) {
+        const newConfig = config.data;
+        onPackAdded(newConfig);
+        toast.success("Config Created");
+        onClose();
+      } else {
+        toast.error(addConfigError);
+      }
+    }
   };
 
   const handleAddSetting = () => {
@@ -95,6 +113,11 @@ const CreateConfigModal = ({
     });
   };
 
+  useEffect(() => {
+    const keys = settingsObj ? Object.keys(settingsObj) : [];
+    setSettings(keys);
+  }, [settingsObj]);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       {isOpen && (
@@ -103,7 +126,7 @@ const CreateConfigModal = ({
       <ModalContent className="flex flex-col justify-center items-center w-screen h-screen">
         <ModalBody
           pb={6}
-          className="w-[30%] h-[90%] bg-slate-800 rounded-xl flex flex-col pt-5 gap-9 overflow-auto"
+          className="w-[30%] h-[70%] bg-slate-800 rounded-xl flex flex-col pt-5 gap-9 overflow-auto"
         >
           <form
             className="flex flex-col w-full gap-5 text-white justify-center items-center"
@@ -188,15 +211,21 @@ const CreateConfigModal = ({
                 className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
                 type="submit"
               >
-                Save
+                {updateConfigLoading || addConfigLoading ? (
+                  <Spinner width={"15px"} height={"15px"} />
+                ) : (
+                  "save"
+                )}
               </Button>
-              <Button
-                onClick={onClose}
-                type="button"
-                className="bg-red-700 hover:bg-red-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
-              >
-                Cancel
-              </Button>
+              {!(updateConfigLoading || addConfigLoading) && (
+                <Button
+                  onClick={onClose}
+                  type="button"
+                  className="bg-red-700 hover:bg-red-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
+                >
+                  Cancel
+                </Button>
+              )}
             </ModalFooter>
           </form>
         </ModalBody>

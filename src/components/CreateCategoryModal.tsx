@@ -8,10 +8,12 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
+  Spinner,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import Category from "../models/Category";
-import client from "../services/client";
+import useApi from "../useApi";
 
 interface Props {
   isOpen: boolean;
@@ -25,9 +27,52 @@ const CreateCategoryModal = ({
   onCategoryAdded,
   selectedCategory,
 }: Props) => {
+  const {
+    request: UpdateCatecory,
+    loading: updateCategoryLoading,
+    error: updateCategoryError,
+  } = useApi("UpdateCatecory");
+
+  const {
+    request: addCategory,
+    loading: addCategoryLoading,
+    error: addCategoryError,
+  } = useApi("addCategory");
+
   const [categoryName, setCategoryName] = useState(
     selectedCategory?.title || ""
   );
+
+  const handleAddCategory = async () => {
+    let category;
+    try {
+      if (selectedCategory) {
+        const id = selectedCategory.id;
+        category = await UpdateCatecory(categoryName, id);
+        if (category.succeed) {
+          const newCategory = category.data;
+          onCategoryAdded(newCategory);
+          toast.success("Category Updated");
+          onClose();
+        } else {
+          toast.error(updateCategoryError);
+        }
+      } else {
+        category = await addCategory(categoryName);
+        if (category.succeed) {
+          const newCategory = category.data;
+          onCategoryAdded(newCategory);
+          toast.success("New Category added");
+          onClose();
+        } else {
+          toast.error(addCategoryError);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating/adding Category:", error);
+    }
+    onClose();
+  };
 
   useEffect(() => {
     if (selectedCategory) {
@@ -36,22 +81,6 @@ const CreateCategoryModal = ({
       setCategoryName("");
     }
   }, [selectedCategory]);
-
-  const handleAddCategory = async () => {
-    let category;
-    try {
-      if (selectedCategory) {
-        const id = selectedCategory.id;
-        category = await client.UpdateCatecory(categoryName, id);
-      } else {
-        category = await client.addCategory(categoryName);
-      }
-      onCategoryAdded(category);
-    } catch (error) {
-      console.error("Error updating/adding Category:", error);
-    }
-    onClose();
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -81,16 +110,25 @@ const CreateCategoryModal = ({
           <ModalFooter className="flex gap-5 text-white justify-center items-center">
             <Button
               className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
+              type="submit"
               onClick={handleAddCategory}
+              disabled={updateCategoryLoading || addCategoryLoading}
             >
-              Save
+              {updateCategoryLoading || addCategoryLoading ? (
+                <Spinner width={"15px"} height={"15px"} />
+              ) : (
+                "Save"
+              )}
             </Button>
-            <Button
-              onClick={onClose}
-              className="bg-red-700 hover:bg-red-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
-            >
-              Cancel
-            </Button>
+            {!(updateCategoryLoading || addCategoryLoading) && (
+              <Button
+                onClick={onClose}
+                type="button"
+                className="bg-red-700 hover:bg-red-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
+              >
+                Cancel
+              </Button>
+            )}
           </ModalFooter>
         </ModalBody>
       </ModalContent>

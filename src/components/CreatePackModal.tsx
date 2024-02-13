@@ -78,7 +78,7 @@ const CreatePackModal = ({
       if (pack.succeed) {
         const newPack = pack.data;
         onPackAdded(newPack);
-        toast.success("New Package is added");
+        toast.success("New Package added");
         onClose();
       } else {
         toast.error(addPackError);
