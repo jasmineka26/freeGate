@@ -27,51 +27,65 @@ const Date: React.FC<IProps> = ({ onDatePicked }) => {
   };
 
   return (
-    <div className="flex p-4 rounded-xl items-center justify-between bg-white shadow-lg ">
-      <div>
-        <span className="mx-4 text-gray-500">از</span>
-        <DatePicker
-          style={{
-            height: "40px",
-            padding: "0 10px 0px 10px",
-            color: "gray",
-          }}
-          className="bg-dark"
-          placeholder="Select date start"
-          name="start"
-          calendar={persian}
-          locale={persian_fa}
-          format="HH:mm - YYYY/MM/DD"
-          animations={[opacity(), transition({ from: 35, duration: 800 })]}
-          value={startDate}
-          onChange={setStartDate}
-          plugins={[
-            <TimePicker hideSeconds />,
-            <Toolbar position="bottom" sort={["deselect", "close", "today"]} />,
-          ]}
-        />
-        <span className="mx-4 text-gray-500">تـــــــــا</span>
-        <DatePicker
-          style={{ height: "40px", padding: "0 10px 0px 10px", color: "gray" }}
-          className="bg-dark"
-          placeholder="Select date end"
-          name="end"
-          calendar={persian}
-          locale={persian_fa}
-          format="HH:mm - YYYY/MM/DD"
-          animations={[opacity(), transition({ from: 35, duration: 800 })]}
-          value={endDate}
-          onChange={setEndDate}
-          plugins={[
-            <TimePicker hideSeconds />,
-            <Toolbar position="bottom" sort={["deselect", "close", "today"]} />,
-          ]}
-        />
+    <div className="flex p-4 rounded-xl items-center justify-center gap-5 bg-white shadow-lg sm:p-0">
+      <div className="sm:scale-75 sm:flex sm:flex-row">
+        <div>
+          <span className="mx-4 text-gray-500">از</span>
+          <DatePicker
+            style={{
+              height: "40px",
+              padding: "0 10px 0px 10px",
+              color: "gray",
+            }}
+            className="bg-dark"
+            placeholder="Select date start"
+            name="start"
+            calendar={persian}
+            locale={persian_fa}
+            format="HH:mm - YYYY/MM/DD"
+            animations={[opacity(), transition({ from: 35, duration: 800 })]}
+            value={startDate}
+            onChange={setStartDate}
+            plugins={[
+              <TimePicker hideSeconds />,
+              <Toolbar
+                position="bottom"
+                sort={["deselect", "close", "today"]}
+              />,
+            ]}
+          />
+        </div>
+        <div>
+          <span className="mx-4 text-gray-500">تـــــــــا</span>
+          <DatePicker
+            style={{
+              height: "40px",
+              padding: "0 10px 0px 10px",
+              color: "gray",
+            }}
+            className="bg-dark"
+            placeholder="Select date end"
+            name="end"
+            calendar={persian}
+            locale={persian_fa}
+            format="HH:mm - YYYY/MM/DD"
+            animations={[opacity(), transition({ from: 35, duration: 800 })]}
+            value={endDate}
+            onChange={setEndDate}
+            plugins={[
+              <TimePicker hideSeconds />,
+              <Toolbar
+                position="bottom"
+                sort={["deselect", "close", "today"]}
+              />,
+            ]}
+          />
+        </div>
       </div>
       <div>
         <button
           onClick={handleCreate}
-          className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
+          className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24 sm:scale-75"
         >
           ایــجــــــــاد
         </button>
