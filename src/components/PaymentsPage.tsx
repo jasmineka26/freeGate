@@ -148,6 +148,7 @@ const PaymentsPage = () => {
         identifier={(payment) => payment.id}
         loading={loading}
         error={error}
+        onTryAgain={getUsers || getCards || getPackes || getPayments}
       />
       {payments && cards && users && packes && (
         <CreateManualPayment

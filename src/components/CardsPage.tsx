@@ -1,21 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
 import Card from "../models/Card";
 import client from "../services/client";
 import Search from "./Search";
 import Table from "./Table";
 import CreateCardModal from "./CreateCardModal";
+import useApi from "../useApi";
 
 const CardsPage = () => {
   const { data: admins } = useFetch(client.getAdminUsers, "admins");
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const {
+    request: getCards,
     data: cards,
     setData: setCards,
-    error,
-    loading,
-  } = useFetch(client.getCards, "cards");
+    error: getCardsError,
+    loading: getCardsLoading,
+  } = useApi("getCards");
 
   const headerItems = () => (
     <>
@@ -71,6 +73,9 @@ const CardsPage = () => {
     setIsOpen(false);
     setSelectedCard(null);
   };
+  useEffect(() => {
+    getCards();
+  }, [getCards]);
 
   return (
     <>
@@ -81,8 +86,9 @@ const CardsPage = () => {
           identifier={(card) => card.id}
           headerItems={headerItems}
           renderItem={renderItem}
-          loading={loading}
-          error={error}
+          loading={getCardsLoading}
+          error={getCardsError}
+          onTryAgain={getCards}
         />
       </div>
       <CreateCardModal
@@ -92,12 +98,12 @@ const CardsPage = () => {
         onCardAdded={(newCard) => {
           if (selectedCard) {
             setCards((prevCards) =>
-              prevCards.map((card) =>
+              prevCards!.map((card) =>
                 card.id === selectedCard.id ? newCard : card
               )
             );
           } else {
-            setCards((prevCards) => [...prevCards, newCard]);
+            setCards((prevCards) => [...prevCards!, newCard]);
           }
         }}
         selectedCard={selectedCard}

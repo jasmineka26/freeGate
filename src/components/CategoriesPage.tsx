@@ -1,7 +1,6 @@
-import { useState } from "react";
-import useFetch from "../hooks/useFetch";
+import { useEffect, useState } from "react";
 import Category from "../models/Category";
-import client from "../services/client";
+import useApi from "../useApi";
 import CreateCategoryModal from "./CreateCategoryModal";
 import Search from "./Search";
 import Table from "./Table";
@@ -12,11 +11,12 @@ const CategoriesPage = () => {
     null
   );
   const {
+    request: getCategories,
     data: categories,
     setData: setCategories,
-    error,
-    loading,
-  } = useFetch(client.getCategories, "categories");
+    error: getCategoryError,
+    loading: getCategoryLoading,
+  } = useApi("getCategories");
 
   const headerItems = () => (
     <>
@@ -58,6 +58,10 @@ const CategoriesPage = () => {
     setSelectedCategory(null);
   };
 
+  useEffect(() => {
+    getCategories();
+  }, [getCategories]);
+
   return (
     <>
       <div className="flex flex-col w-screen h-screen bg-gray-200 p-5 gap-5">
@@ -67,26 +71,29 @@ const CategoriesPage = () => {
           identifier={(category) => category.id}
           headerItems={headerItems}
           renderItem={renderItem}
-          loading={loading}
-          error={error}
+          loading={getCategoryLoading}
+          error={getCategoryError}
+          onTryAgain={getCategories}
         />
       </div>
-      <CreateCategoryModal
-        isOpen={isOpen}
-        onClose={handleClose}
-        onCategoryAdded={(newCategory) => {
-          if (selectedCategory) {
-            setCategories((prevCategories) =>
-              prevCategories.map((card) =>
-                card.id === selectedCategory.id ? newCategory : card
-              )
-            );
-          } else {
-            setCategories((prevCards) => [...prevCards, newCategory]);
-          }
-        }}
-        selectedCategory={selectedCategory}
-      />
+      {categories && (
+        <CreateCategoryModal
+          isOpen={isOpen}
+          onClose={handleClose}
+          onCategoryAdded={(newCategory) => {
+            if (selectedCategory) {
+              setCategories((prevCategories) =>
+                prevCategories!.map((card) =>
+                  card.id === selectedCategory.id ? newCategory : card
+                )
+              );
+            } else {
+              setCategories((prevCards) => [...prevCards!, newCategory]);
+            }
+          }}
+          selectedCategory={selectedCategory}
+        />
+      )}
     </>
   );
 };

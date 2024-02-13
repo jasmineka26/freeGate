@@ -1,20 +1,21 @@
-import { useState } from "react";
-import useFetch from "../hooks/useFetch";
+import { useEffect, useState } from "react";
 import Config from "../models/Config";
-import client from "../services/client";
+import useApi from "../useApi";
+import CreateConfigModal from "./CreateConfigModal";
 import Search from "./Search";
 import Table from "./Table";
-import CreateConfigModal from "./CreateConfigModal";
 
 const ConfigPages = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState<Config | null>(null);
+
   const {
+    request: getConfigs,
+    loading: configsLoading,
+    error: configsError,
     data: configs,
     setData: setConfig,
-    error,
-    loading,
-  } = useFetch(client.getConfigs, "configs");
+  } = useApi("getConfigs");
 
   const headerItems = () => (
     <>
@@ -73,6 +74,9 @@ const ConfigPages = () => {
     setIsOpen(false);
     setSelectedConfig(null);
   };
+  useEffect(() => {
+    getConfigs();
+  }, [getConfigs]);
 
   return (
     <>
@@ -83,26 +87,29 @@ const ConfigPages = () => {
           identifier={(config) => config.id}
           headerItems={headerItems}
           renderItem={renderItem}
-          loading={loading}
-          error={error}
+          loading={configsLoading}
+          error={configsError}
+          onTryAgain={getConfigs}
         />
       </div>
-      <CreateConfigModal
-        isOpen={isOpen}
-        onClose={handleClose}
-        onPackAdded={(newConfig) => {
-          if (selectedConfig) {
-            setConfig((prevCards) =>
-              prevCards.map((config) =>
-                config.id === selectedConfig.id ? newConfig : config
-              )
-            );
-          } else {
-            setConfig((prevCards) => [...prevCards, newConfig]);
-          }
-        }}
-        selectedConfig={selectedConfig}
-      />
+      {configs && (
+        <CreateConfigModal
+          isOpen={isOpen}
+          onClose={handleClose}
+          onPackAdded={(newConfig) => {
+            if (selectedConfig) {
+              setConfig((prevConfig) =>
+                prevConfig!.map((config) =>
+                  config.id === selectedConfig.id ? newConfig : config
+                )
+              );
+            } else {
+              setConfig((prevConfig) => [...prevConfig!, newConfig]);
+            }
+          }}
+          selectedConfig={selectedConfig}
+        />
+      )}
     </>
   );
 };

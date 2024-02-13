@@ -59,7 +59,28 @@ const UsersPage = () => {
     setUsers(sortedUsers);
     setAscendingOrder(!ascendingOrder);
   };
+  const handleUserDialogOpen = (user: User | null) => {
+    setSelectedUser(user);
+    setIsOpen(true);
+  };
+  const handleUserSituetionDialogOpen = (user: User | null) => {
+    setSelectedUser(user);
+    setIsOpenSitu(true);
+  };
+  const handleOnHistoryClicked = async (user: User | null) => {
+    const paymentsHistory = await client.getPaymentsHistory(Number(user?.id));
+    setPayments(paymentsHistory);
+    setIsOpenHistoryPayments(true);
+  };
+  const handleFilter = useCallback((data: User[], searchTerm: string) => {
+    const filtered = data.filter((user) => user.username.includes(searchTerm));
+    return filtered;
+  }, []);
 
+  const { filteredItems: filteredUsers, setSearchTerm } = useSearch(
+    users,
+    handleFilter
+  );
   const headerItems = () => (
     <>
       <th scope="col" className="px-6 py-3">
@@ -98,20 +119,6 @@ const UsersPage = () => {
       </th>
     </>
   );
-
-  const handleUserDialogOpen = (user: User | null) => {
-    setSelectedUser(user);
-    setIsOpen(true);
-  };
-  const handleUserSituetionDialogOpen = (user: User | null) => {
-    setSelectedUser(user);
-    setIsOpenSitu(true);
-  };
-  const handleOnHistoryClicked = async (user: User | null) => {
-    const paymentsHistory = await client.getPaymentsHistory(Number(user?.id));
-    setPayments(paymentsHistory);
-    setIsOpenHistoryPayments(true);
-  };
 
   const renderItem = (user: User, index: number = 0) => (
     <>
@@ -152,16 +159,6 @@ const UsersPage = () => {
       <td className="px-6 py-4">{user.subscription?.remainGB}</td>
       <td className="px-6 py-4">{user.subscription?.remainDays}</td>
     </>
-  );
-
-  const handleFilter = useCallback((data: User[], searchTerm: string) => {
-    const filtered = data.filter((user) => user.username.includes(searchTerm));
-    return filtered;
-  }, []);
-
-  const { filteredItems: filteredUsers, setSearchTerm } = useSearch(
-    users,
-    handleFilter
   );
 
   const handleClose = () => {
