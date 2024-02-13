@@ -9,11 +9,13 @@ import {
   ModalFooter,
   ModalOverlay,
   Select,
+  Spinner,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import Card from "../models/Card";
 import User from "../models/User";
-import client from "../services/client";
+import useApi from "../useApi";
 
 interface Props {
   isOpen: boolean;
@@ -38,6 +40,51 @@ const CreateCardModal = ({
     selectedCard?.owner_id || (admins.length > 0 ? admins[0].id : 0)
   );
 
+  const {
+    request: UpdateCard,
+    loading: updateCardLoading,
+    error: updateCardError,
+  } = useApi("UpdateCard");
+
+  const {
+    request: addCard,
+    loading: addCardLoading,
+    error: addCardError,
+  } = useApi("addCard");
+
+  const handleAddCard = async () => {
+    let card;
+    try {
+      if (selectedCard) {
+        const id = selectedCard.id;
+        card = await UpdateCard(title, cardNumber, cardOwnerName, id);
+
+        if (card.succeed) {
+          const newCard = card.data;
+          onCardAdded(newCard);
+          toast.success("Card Updated");
+          onClose();
+        } else {
+          toast.error(updateCardError);
+        }
+      } else {
+        card = await addCard(title, cardNumber, cardOwnerName, selectedAdmin);
+
+        if (card.succeed) {
+          const newCard = card.data;
+          onCardAdded(newCard);
+          toast.success("Card Updated");
+          onClose();
+        } else {
+          toast.error(addCardError);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating/adding Cards:", error);
+    }
+    onClose();
+  };
+
   useEffect(() => {
     if (selectedCard) {
       setTitle(selectedCard.title || "");
@@ -51,27 +98,6 @@ const CreateCardModal = ({
       setAdmin(admins.length > 0 ? admins[0].id : 0);
     }
   }, [admins, selectedCard]);
-
-  const handleAddCard = async () => {
-    let newCard;
-    try {
-      if (selectedCard) {
-        const id = selectedCard.id;
-        newCard = await client.UpdateCard(title, cardNumber, cardOwnerName, id);
-      } else {
-        newCard = await client.addCard(
-          title,
-          cardNumber,
-          cardOwnerName,
-          selectedAdmin
-        );
-      }
-      onCardAdded(newCard);
-    } catch (error) {
-      console.error("Error updating/adding Cards:", error);
-    }
-    onClose();
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -134,16 +160,25 @@ const CreateCardModal = ({
           <ModalFooter className="flex gap-5 text-white justify-center items-center">
             <Button
               className="bg-blue-700 hover:bg-blue-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
+              type="submit"
               onClick={handleAddCard}
+              disabled={updateCardLoading || addCardLoading}
             >
-              Save
+              {updateCardLoading || addCardLoading ? (
+                <Spinner width={"15px"} height={"15px"} />
+              ) : (
+                "Save"
+              )}
             </Button>
-            <Button
-              onClick={onClose}
-              className="bg-red-700 hover:bg-red-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
-            >
-              Cancel
-            </Button>
+            {!(updateCardLoading || addCardLoading) && (
+              <Button
+                onClick={onClose}
+                type="button"
+                className="bg-red-700 hover:bg-red-800 text-white font-normal text-sm py-2 px-1 rounded-lg h-10 w-24"
+              >
+                Cancel
+              </Button>
+            )}
           </ModalFooter>
         </ModalBody>
       </ModalContent>
